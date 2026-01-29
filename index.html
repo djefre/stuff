@@ -1,0 +1,2913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="The Button Experiment - An interactive chaos simulator with 24 progressively unhinged buttons. An experiment with vanilla HTML, CSS, and JavaScript engineering.">
+  <meta name="author" content="A Chaotic Developer">
+  <meta name="theme-color" content="#1a0033">
+  <meta property="og:title" content="The Button Experiment">
+  <meta property="og:description" content="An interactive chaos simulator with 24 progressively unhinged buttons. Don't press them. Seriously.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://placehold.co/1200x630/1a0033/a855f7?text=The+Button+Experiment">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="The Button Experiment">
+  <meta name="twitter:description" content="24 buttons you shouldn't press. An experiment in chaos engineering.">
+  <title>The Button Experiment</title>
+  <style>
+    /* ================================================================
+       THE BUTTON EXPERIMENT - Stylesheet
+       A chaos simulator demonstrating advanced CSS
+       architecture and progressive enhancement techniques.
+       ================================================================ */
+
+    /* ==================== CUSTOM PROPERTIES ==================== */
+    :root {
+      /* Global chaos state */
+      --chaos-level: 0;
+
+      /* Animation parameters */
+      --shake-x: 0px;
+      --shake-y: 0px;
+      --rotation-angle: 0deg;
+      --hue-rotation: 0deg;
+      --body-rotation: 0deg;
+
+      /* Scale transforms */
+      --font-scale: 1;
+      --inflation-scale: 1;
+      --dave-scale: 1;
+
+      /* Button theming (set per-button via JS) */
+      --btn-hue: 280;
+      --btn-saturation: 85%;
+      --btn-lightness: 55%;
+
+      /* Color palette */
+      --color-primary: #a855f7;
+      --color-danger: #ef4444;
+      --color-warning: #eab308;
+      --color-success: #22c55e;
+      --color-terminal: #00ff00;
+      --color-text-muted: rgba(255, 255, 255, 0.75);
+
+      /* Spacing */
+      --spacing-xs: 0.625rem;
+      --spacing-sm: 1.25rem;
+      --spacing-md: 2.5rem;
+      --spacing-lg: 3.75rem;
+
+      /* Z-index layers */
+      --z-base: 1;
+      --z-buttons: 100;
+      --z-password-overlay: 300;
+      --z-overlay: 500;
+      --z-gossip: 600;
+      --z-sentient: 800;
+      --z-conspiracy: 900;
+      --z-ui-fixed: 1000;
+      --z-overlay-ui: 1500;
+      --z-modal: 5000;
+      --z-cursor: 9999;
+      --z-critical: 10000;
+      --sanity-color: var(--color-danger);
+    }
+
+    /* ==================== RESET & BASE ==================== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: linear-gradient(135deg, #1a0033 0%, #000 100%);
+      background-size: 200% 200%;
+      color: white;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-size: 100%;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+      transition: filter 0.3s ease, transform 0.3s ease;
+      animation: bg-shift 20s ease infinite;
+      transform-origin: center center;
+    }
+
+    /* ==================== LAYOUT ==================== */
+    #main-container {
+      max-width: min(75rem, 95vw);
+      margin: 0 auto;
+      padding: var(--spacing-md) var(--spacing-sm);
+      transform-origin: center center;
+      transition: transform 0.5s ease, filter 0.3s ease;
+      will-change: transform;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: var(--spacing-md);
+    }
+
+    #button-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(15.625rem, 100%), 1fr));
+      gap: var(--spacing-sm);
+      margin-top: var(--spacing-md);
+      position: relative;
+    }
+
+    footer {
+      text-align: center;
+      padding: var(--spacing-md) var(--spacing-sm);
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 0.875rem;
+    }
+
+    footer a {
+      color: var(--color-primary);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* ==================== TYPOGRAPHY ==================== */
+    #page-title {
+      font-size: clamp(1.75rem, 5vw, 3rem);
+      text-shadow: 0 0 20px var(--color-primary), 0 0 40px rgba(168, 85, 247, 0.5);
+      margin-bottom: var(--spacing-sm);
+      transition: font-size 0.3s ease, color 0.3s ease;
+      line-height: 1.2;
+    }
+
+    #subtitle {
+      color: var(--color-text-muted);
+      font-size: clamp(0.9rem, 2vw, 1.2rem);
+      line-height: 1.5;
+    }
+
+    /* ==================== BUTTON STYLES ==================== */
+    .chaos-button {
+      padding: clamp(1rem, 2.8vw, 1.35rem) clamp(1.35rem, 3.2vw, 2rem);
+      font-size: clamp(0.95rem, 1.5vw, 1.2rem);
+      font-weight: bold;
+      border: clamp(2px, 0.2vw, 3px) solid hsl(var(--btn-hue), var(--btn-saturation), var(--btn-lightness));
+      border-radius: clamp(0.5rem, 1.5vw, 0.75rem);
+      cursor: pointer;
+      position: relative;
+      min-height: clamp(4rem, 11vw, 5.5rem);
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, opacity 0.3s ease;
+      background: rgba(0, 0, 0, 0.4);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
+      box-shadow:
+        0 0 15px hsla(var(--btn-hue), var(--btn-saturation), var(--btn-lightness), 0.5),
+        0 4px 20px hsla(var(--btn-hue), var(--btn-saturation), calc(var(--btn-lightness) - 10%), 0.3);
+    }
+
+
+    .chaos-button:hover:not(.falling) {
+      transform: scale(1.05);
+      box-shadow:
+        0 0 25px hsla(var(--btn-hue), var(--btn-saturation), var(--btn-lightness), 0.8),
+        0 6px 30px hsla(var(--btn-hue), var(--btn-saturation), calc(var(--btn-lightness) - 10%), 0.5);
+    }
+
+    .chaos-button:active:not(.falling) {
+      transform: scale(0.95);
+    }
+
+    .chaos-button:focus-visible {
+      outline: max(2px, clamp(2px, 0.2rem, 3px)) solid var(--color-primary);
+      outline-offset: 4px;
+    }
+
+    /* ==================== UI COMPONENTS ==================== */
+    #sanity-counter {
+      position: fixed;
+      top: var(--spacing-sm);
+      right: var(--spacing-sm);
+      background: rgba(0, 0, 0, 0.8);
+      padding: clamp(0.5rem, 2vw, 0.9375rem) clamp(0.75rem, 3vw, 1.5625rem);
+      border-radius: clamp(0.375rem, 1vw, 0.625rem);
+      font-family: 'Courier New', monospace;
+      font-size: clamp(0.75rem, 1.5vw, 1.1rem);
+      z-index: var(--z-ui-fixed);
+      text-shadow: 0 0 0.625rem var(--sanity-color);
+      border: 2px solid var(--sanity-color);
+      transition: text-shadow 0.3s ease, border-color 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    #cursor-trail-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: var(--z-cursor);
+    }
+
+    .cursor-trail-dot {
+      position: absolute;
+      width: 0.5rem;
+      height: 0.5rem;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(236, 72, 153, 1) 0%, rgba(236, 72, 153, 0) 70%);
+      animation: fade-out 1s ease-out forwards;
+      pointer-events: none;
+    }
+
+    #bsod-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #0000AA;
+      color: white;
+      z-index: var(--z-critical);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Courier New', monospace;
+      padding: clamp(1.5rem, 5vw, 2.5rem);
+      text-align: center;
+    }
+
+    #bsod-screen a {
+      position: absolute;
+      bottom: var(--spacing-sm);
+      right: var(--spacing-sm);
+      font-size: 0.875rem;
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    #bsod-screen a:hover {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    #dave-container {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: var(--z-modal);
+      background: rgba(0, 0, 0, 0.9);
+      padding: clamp(1.5rem, 5vw, 2.5rem);
+      border-radius: clamp(0.75rem, 2vw, 1.25rem);
+      color: var(--color-terminal);
+      font-family: 'Courier New', monospace;
+      text-shadow: 0 0 20px var(--color-terminal);
+      border: clamp(2px, 0.2vw, 3px) solid var(--color-terminal);
+      box-shadow: 0 0 50px rgba(0, 255, 0, 0.5);
+      white-space: pre;
+      font-size: calc(1rem * var(--dave-scale));
+      transition: font-size 0.5s ease, opacity 0.5s ease;
+      pointer-events: none;
+      backdrop-filter: blur(5px);
+    }
+
+    .chaos-button:has(.speech-bubble) {
+      overflow: visible;
+    }
+
+    .speech-bubble {
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: white;
+      color: black;
+      padding: var(--spacing-xs);
+      border-radius: clamp(0.375rem, 1vw, 0.5rem);
+      font-size: 0.8rem;
+      max-width: clamp(8rem, 40vw, 12.5rem);
+      z-index: var(--z-overlay);
+      white-space: normal;
+      text-align: center;
+      margin-bottom: var(--spacing-xs);
+      animation: bubble-appear 0.3s ease-out;
+      pointer-events: none;
+    }
+
+    .speech-bubble::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 0.5rem solid transparent;
+      border-right: 0.5rem solid transparent;
+      border-top: 0.5rem solid white;
+    }
+
+    .gossip-bubble {
+      position: fixed;
+      background: rgba(0, 0, 0, 0.85);
+      color: white;
+      padding: clamp(0.5rem, 1.5vw, 0.75rem);
+      border-radius: clamp(0.375rem, 1vw, 0.5rem);
+      font-size: 0.9rem;
+      z-index: var(--z-gossip);
+      max-width: clamp(15rem, 50vw, 18.75rem);
+      animation: float-up 5s ease-out forwards;
+      pointer-events: none;
+      backdrop-filter: blur(5px);
+    }
+
+    .conspiracy-text {
+      position: absolute;
+      color: var(--color-danger);
+      font-weight: bold;
+      pointer-events: none;
+      z-index: var(--z-conspiracy);
+      text-shadow: 0 0 5px rgba(255, 0, 0, 0.8);
+    }
+
+    #conspiracy-svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: var(--z-conspiracy);
+      overflow: visible;
+    }
+
+    .sentient-thought {
+      position: fixed;
+      pointer-events: none;
+      z-index: var(--z-sentient);
+      font-family: 'Courier New', monospace;
+      color: var(--color-terminal);
+      text-shadow: 0 0 8px var(--color-terminal), 0 0 16px var(--color-terminal);
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.5s, transform 3s ease-out;
+    }
+
+    /* Ensure buttons with overlays have enough height for the form */
+    .chaos-button:has(.password-overlay) {
+      min-height: clamp(5.5rem, 14vw, 7rem);
+    }
+
+    .password-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.92);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: var(--z-password-overlay);
+      gap: 0.35rem;
+      padding: 0.5rem 0.75rem;
+      backdrop-filter: blur(3px);
+      border-radius: inherit;
+    }
+
+    .password-overlay input {
+      padding: 0.25rem 0.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      font-size: clamp(0.75rem, 1.2vw, 0.875rem);
+      border-radius: 0.25rem;
+      width: min(80%, 12rem);
+      font-family: 'Courier New', monospace;
+    }
+
+    .password-overlay input:focus {
+      outline: 2px solid white;
+      outline-offset: 1px;
+      border-color: white;
+    }
+
+    .password-overlay button {
+      padding: 0.2rem 0.75rem;
+      background: white;
+      color: black;
+      border: none;
+      border-radius: 0.25rem;
+      cursor: pointer;
+      font-size: clamp(0.7rem, 1.1vw, 0.85rem);
+      font-weight: bold;
+      transition: transform 0.2s ease;
+    }
+
+    .password-overlay button:hover {
+      transform: scale(1.05);
+    }
+
+    .password-overlay .error-message {
+      color: var(--color-danger);
+      font-size: clamp(0.65rem, 1vw, 0.75rem);
+      font-family: 'Courier New', monospace;
+      min-height: 1em;
+    }
+
+    .under-construction {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: repeating-linear-gradient(45deg, yellow 0px, yellow 20px, black 20px, black 40px);
+      padding: clamp(0.75rem, 2vw, 0.9375rem);
+      text-align: center;
+      z-index: var(--z-overlay-ui);
+      font-weight: bold;
+      font-size: clamp(1rem, 2.5vw, 1.5rem);
+      animation: blink-text 1s infinite;
+      color: var(--color-danger);
+    }
+
+    .visitor-counter {
+      position: fixed;
+      bottom: var(--spacing-sm);
+      left: var(--spacing-sm);
+      background: black;
+      color: lime;
+      padding: var(--spacing-xs) var(--spacing-sm);
+      font-family: 'Courier New', monospace;
+      border: 2px solid lime;
+      z-index: var(--z-overlay-ui);
+    }
+
+    .replaying-indicator {
+      position: fixed;
+      bottom: var(--spacing-sm);
+      left: var(--spacing-sm);
+      background: rgba(255, 215, 0, 0.9);
+      color: black;
+      padding: var(--spacing-xs) var(--spacing-sm);
+      border-radius: clamp(0.375rem, 1vw, 0.5rem);
+      font-weight: bold;
+      z-index: var(--z-overlay-ui);
+      animation: blink-text 1s infinite;
+    }
+
+    /* ==================== STATE CLASSES ==================== */
+    .hidden {
+      display: none !important;
+      visibility: hidden !important;
+    }
+
+    .falling {
+      animation: fall-down 3s ease-in forwards;
+      pointer-events: none;
+    }
+
+    .spinning {
+      animation: spin-continuous 2s linear infinite;
+    }
+
+    .wobbling {
+      animation: wobble 1s ease-in-out infinite;
+    }
+
+    .fleeing {
+      transition: left 0.18s ease-out, top 0.18s ease-out;
+    }
+
+    .shake-light {
+      --shake-x: 2px;
+      --shake-y: 2px;
+      animation: shake 0.5s infinite;
+    }
+
+    .shake-medium {
+      --shake-x: 5px;
+      --shake-y: 5px;
+      animation: shake 0.4s infinite;
+    }
+
+    .shake-heavy {
+      --shake-x: 10px;
+      --shake-y: 10px;
+      animation: shake 0.3s infinite;
+    }
+
+    .shake-earthquake {
+      --shake-x: 20px;
+      --shake-y: 20px;
+      animation: shake-quake 0.2s infinite;
+    }
+
+    .container-transformed {
+      transform: rotate(var(--gravity-rotation, 0deg)) rotate(var(--rotation-angle)) scale(var(--inflation-scale));
+    }
+
+    .cursor-hidden,
+    .cursor-hidden * {
+      cursor: none !important;
+    }
+
+    /* ==================== ANIMATIONS ==================== */
+    @keyframes bg-shift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translate(0, 0); }
+      25% { transform: translate(calc(-1 * var(--shake-x)), var(--shake-y)); }
+      50% { transform: translate(var(--shake-x), calc(-1 * var(--shake-y))); }
+      75% { transform: translate(calc(-1 * var(--shake-x)), calc(-1 * var(--shake-y))); }
+    }
+
+    @keyframes shake-quake {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      10% { transform: translate(calc(-1 * var(--shake-x)), var(--shake-y)) rotate(-2deg); }
+      20% { transform: translate(var(--shake-x), calc(-1 * var(--shake-y))) rotate(2deg); }
+      30% { transform: translate(calc(-1 * var(--shake-x)), calc(-1 * var(--shake-y))) rotate(-2deg); }
+      40% { transform: translate(var(--shake-x), var(--shake-y)) rotate(2deg); }
+      50% { transform: translate(calc(-1 * var(--shake-x)), calc(0.75 * var(--shake-y))) rotate(-1deg); }
+      60% { transform: translate(var(--shake-x), calc(-0.75 * var(--shake-y))) rotate(1deg); }
+      70% { transform: translate(calc(-0.75 * var(--shake-x)), calc(-1 * var(--shake-y))) rotate(-2deg); }
+      80% { transform: translate(calc(0.75 * var(--shake-x)), var(--shake-y)) rotate(2deg); }
+      90% { transform: translate(calc(-0.75 * var(--shake-x)), calc(0.75 * var(--shake-y))) rotate(-1deg); }
+    }
+
+    @keyframes fall-down {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(200vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    @keyframes spin-continuous {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes fade-out {
+      from {
+        opacity: 1;
+        transform: scale(1);
+      }
+      to {
+        opacity: 0;
+        transform: scale(0.5);
+      }
+    }
+
+    @keyframes wobble {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-5deg); }
+      75% { transform: rotate(5deg); }
+    }
+
+    @keyframes blink-text {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+
+    @keyframes sentient-drift {
+      from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+      to {
+        opacity: 0;
+        transform: translateY(-7.5rem) scale(0.6);
+      }
+    }
+
+    @keyframes float-up {
+      0% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-12.5rem);
+      }
+    }
+
+    @keyframes bubble-appear {
+      0% {
+        opacity: 0;
+        transform: translateX(-50%) scale(0.5);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(-50%) scale(1);
+      }
+    }
+
+    @keyframes shake-overlay {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-0.3125rem); }
+      75% { transform: translateX(0.3125rem); }
+    }
+
+    @keyframes marquee-scroll {
+      from { transform: translateX(100%); }
+      to { transform: translateX(-100%); }
+    }
+
+    .css-marquee {
+      display: inline-block;
+      white-space: nowrap;
+      animation: marquee-scroll 10s linear infinite;
+    }
+
+    /* ==================== RESPONSIVE ==================== */
+    @media (max-width: 768px) {
+      #button-grid {
+        grid-template-columns: repeat(auto-fit, minmax(min(12.5rem, 100%), 1fr));
+        gap: clamp(0.75rem, 2.5vw, 0.9375rem);
+      }
+
+      .chaos-button {
+        font-size: clamp(0.9rem, 1.5vw, 1rem);
+        padding: clamp(0.75rem, 2vw, 0.9375rem) clamp(1rem, 2.5vw, 1.25rem);
+        min-height: clamp(3rem, 8vw, 4.375rem);
+      }
+
+      #sanity-counter {
+        font-size: clamp(0.7rem, 1.5vw, 0.9rem);
+        padding: clamp(0.5rem, 1.5vw, 0.625rem) clamp(0.75rem, 2vw, 0.9375rem);
+      }
+
+      #page-title {
+        font-size: clamp(1.5rem, 4vw, 2rem);
+      }
+
+      #subtitle {
+        font-size: clamp(0.85rem, 1.8vw, 1rem);
+      }
+    }
+
+    @media (max-width: 480px) {
+      #button-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-xs);
+      }
+
+      .chaos-button {
+        font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+        padding: clamp(0.625rem, 2vw, 0.75rem) clamp(0.75rem, 2.5vw, 0.9375rem);
+        min-height: clamp(2.75rem, 8vw, 3.75rem);
+      }
+
+      #main-container {
+        padding: var(--spacing-sm) clamp(0.75rem, 3vw, 0.9375rem);
+      }
+
+      #sanity-counter {
+        top: var(--spacing-xs);
+        right: var(--spacing-xs);
+        font-size: clamp(0.65rem, 1.5vw, 0.8rem);
+        padding: clamp(0.375rem, 1.5vw, 0.5rem) clamp(0.5rem, 2vw, 0.75rem);
+      }
+    }
+
+    /* ==================== ACCESSIBILITY ==================== */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+
+    /* Focus visible for better keyboard navigation */
+    button:focus-visible,
+    a:focus-visible,
+    input:focus-visible {
+      outline: clamp(2px, 0.2rem, 3px) solid var(--color-primary);
+      outline-offset: 2px;
+    }
+
+    /* High contrast mode support */
+    @media (prefers-contrast: high) {
+      .chaos-button {
+        border-width: clamp(3px, 0.25rem, 4px);
+      }
+
+      #sanity-counter {
+        border-width: clamp(2px, 0.2rem, 3px);
+      }
+    }
+
+    .noscript-overlay {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: var(--spacing-sm);
+      z-index: var(--z-critical);
+    }
+
+    .noscript-overlay h2 {
+      font-size: 2rem;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .noscript-overlay p {
+      font-size: 1.2rem;
+    }
+  </style>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  "name": "The Button Experiment",
+  "description": "An interactive chaos simulator with 24 progressively unhinged buttons. A demonstration of vanilla HTML, CSS, and JavaScript engineering.",
+  "author": {
+    "@type": "Person",
+    "name": "A Chaotic Developer"
+  },
+  "keywords": "interactive design, JavaScript experiment, portfolio, web development, chaos simulator",
+  "genre": "Interactive Entertainment"
+}
+</script>
+</head>
+<body>
+  <noscript>
+    <div class="noscript-overlay">
+      <div>
+        <h2>JavaScript Required</h2>
+        <p>The Button Experiment requires JavaScript to function. Please enable JavaScript in your browser to experience the chaos.</p>
+      </div>
+    </div>
+  </noscript>
+
+  <div id="cursor-trail-container" aria-hidden="true"></div>
+
+  <div id="sanity-counter" class="hidden" role="status" aria-live="polite" aria-atomic="true">
+    Buttons pressed: 0 / Sanity: 100%
+  </div>
+
+  <main id="main-container">
+    <header>
+      <h1 id="page-title">DO NOT PRESS THESE BUTTONS</h1>
+      <p id="subtitle">Seriously. Don't.</p>
+    </header>
+
+    <section id="button-grid" aria-label="Chaos button grid">
+      <button type="button" class="chaos-button" data-button-id="1" aria-label="Multiply - clones itself when pressed">Multiply</button>
+      <button type="button" class="chaos-button" data-button-id="2" aria-label="CAPS LOCK FOREVER - makes all text uppercase and larger">CAPS LOCK FOREVER</button>
+      <button type="button" class="chaos-button" data-button-id="3" aria-label="Nausea Mode - rotates and shifts colors">Nausea Mode</button>
+      <button type="button" class="chaos-button" data-button-id="4" aria-label="This button is shy - runs away from your cursor">This button is shy</button>
+      <button type="button" class="chaos-button" data-button-id="5" aria-label="Reverse Gravity - flips the page upside down">Reverse Gravity</button>
+      <button type="button" class="chaos-button" data-button-id="6" aria-label="Earthquake - makes the page shake violently">Earthquake</button>
+      <button type="button" class="chaos-button" data-button-id="7" aria-label="Let there be color - randomizes all colors">Let there be color</button>
+      <button type="button" class="chaos-button" data-button-id="8" aria-label="The Floor is Lava - makes elements fall off the page">The Floor is Lava</button>
+      <button type="button" class="chaos-button" data-button-id="9" aria-label="Identity Crisis - shuffles button labels">Identity Crisis</button>
+      <button type="button" class="chaos-button" data-button-id="10" aria-label="Undo (this does not undo) - actually causes more chaos">Undo (this does not undo)</button>
+      <button type="button" class="chaos-button" data-button-id="11" aria-label="Ctrl+Z - makes buttons flee from your cursor">Ctrl+Z</button>
+      <button type="button" class="chaos-button" data-button-id="12" aria-label="Summon Dave - displays ASCII art">Summon Dave</button>
+      <button type="button" class="chaos-button" data-button-id="13" aria-label="What does this one do? - unpredictable effects">What does this one do?</button>
+      <button type="button" class="chaos-button" data-button-id="14" aria-label="DO NOT PRESS - shows error screen">DO NOT PRESS</button>
+      <button type="button" class="chaos-button" data-button-id="15" aria-label="Translate to Pirate - translates text to pirate speak">Translate to Pirate</button>
+      <button type="button" class="chaos-button" data-button-id="16" aria-label="Inflation - makes everything bigger">Inflation</button>
+      <button type="button" class="chaos-button" data-button-id="17" aria-label="Conspiracy Mode - draws red lines between buttons">Conspiracy Mode</button>
+      <button type="button" class="chaos-button" data-button-id="18" aria-label="Existential Crisis - buttons question their existence">Existential Crisis</button>
+      <button type="button" class="chaos-button" data-button-id="19" aria-label="Bureaucracy - adds confirmation dialogs">Bureaucracy</button>
+      <button type="button" class="chaos-button" data-button-id="20" aria-label="Time Travel - adds 90s web design elements">Time Travel</button>
+      <button type="button" class="chaos-button" data-button-id="21" aria-label="Sentience - buttons become self-aware">Sentience</button>
+      <button type="button" class="chaos-button" data-button-id="22" aria-label="Gossip - buttons spread rumors about each other">Gossip</button>
+      <button type="button" class="chaos-button" data-button-id="23" aria-label="Deja Vu - replays recent button presses">Deja Vu</button>
+      <button type="button" class="chaos-button" data-button-id="24" aria-label="Password Protected - locks all buttons">Password Protected</button>
+    </section>
+  </main>
+
+  <div id="dave-container" class="hidden" role="img" aria-label="Dave ASCII art decoration"></div>
+
+  <div id="bsod-screen" class="hidden" role="alertdialog" aria-modal="true" aria-label="System Error"></div>
+
+  <footer>
+    <p>A chaos experiment by <a href="https://github.com/djefre" target="_blank" rel="noopener noreferrer">A Chaotic Developer</a> | Built with vanilla HTML, CSS, and JavaScript</p>
+  </footer>
+
+  <script>
+    /**
+     * @fileoverview The Button Experiment — A chaotic interactive experience
+     *               featuring 24 buttons that progressively destabilize the page.
+     *
+     *               This application demonstrates advanced JavaScript patterns including:
+     *               - Revealing Module Pattern for encapsulation
+     *               - Event delegation for performance
+     *               - DOM caching to minimize queries
+     *               - Resource cleanup and memory management
+     *               - Progressive enhancement with accessibility
+     *
+     * @version 2.0.0
+     * @license MIT
+     */
+    const ChaosApp = (() => {
+      'use strict';
+
+      // ===== CONFIGURATION =====
+      /**
+       * @constant {Object} CONFIG - Centralized configuration for all magic numbers
+       * @description All hardcoded values extracted to named constants for maintainability
+       */
+      const CONFIG = {
+        // Chaos progression thresholds
+        CHAOS_THRESHOLD: {
+          LIGHT: 3,    // Start light shake
+          MEDIUM: 6,   // Upgrade to medium shake
+          HEAVY: 9,    // Heavy shake + auto-click starts
+          EXTREME: 12  // Earthquake mode + faster auto-click
+        },
+
+        // Auto-click timing
+        AUTO_CLICK_MS: {
+          FAST: 1500,  // Extreme chaos level
+          SLOW: 3000   // Heavy chaos level
+        },
+
+        // Resource limits
+        MAX_CLONED_BUTTONS: 100,
+        MAX_TRAIL_DOTS: 50,
+        MAX_CLICK_HISTORY: 10,
+
+        // Performance throttling
+        TRAIL_THROTTLE_MS: 50,
+
+        // Ambient chaos
+        AMBIENT_BONUS_EVERY: 5,  // Extra ambient effect every N clicks
+
+        // Button behaviors
+        CLONE_RANGE: { MIN: 3, MAX: 5 },
+        FONT_SCALE_STEP: 1.15,
+        NAUSEA: {
+          ROTATION_STEP: 15,
+          HUE_STEP: 60
+        },
+        INFLATION_STEP: 1.2,
+        INFLATION_MAX: 10,
+        DAVE_SCALE_STEP: 1.3,
+        DAVE_SCALE_MAX: 20,
+        FONT_SCALE_MAX: 10,
+        SANITY_DECAY_RATE: 4.17,  // Percentage per button press
+        PASSWORD_MAX_ATTEMPTS: 3,
+        FLEE_RADIUS: 200,
+        FLEE_FORCE_DIVISOR: 10,
+
+        // Sentience system
+        SENTIENCE: {
+          AUTO_THRESHOLD: 3,          // Level to start autonomous thoughts
+          RENAME_THRESHOLD: 5,        // Level to rename buttons
+          BASE_INTERVAL_MS: 3000,     // Base interval between thoughts
+          INTERVAL_REDUCTION_MS: 400  // Reduction per level
+        },
+
+        // Deja Vu system
+        DEJA_VU: {
+          REPLAY_INTERVAL_MS: 4000,  // Time between replays
+          REPLAY_DELAY_MS: 500,      // Delay between replayed clicks
+          RECENT_COUNT: 5            // Number of recent clicks to replay
+        },
+
+        // Bureaucracy limit
+        MAX_BUREAUCRACY: 5,
+
+        // Magic number constants
+        FLOATING_TEXT: { FONT_MIN: 14, FONT_MAX: 48, POSITION_MIN: 5, POSITION_MAX: 85 },
+        CURSOR_BURST: { COUNT: 12, DOT_MIN: 6, DOT_MAX: 20, SPREAD: 40 },
+        BORDER_CHAOS: { WIDTH_MIN: 5, WIDTH_MAX: 15 },
+        GRAVITY_NUDGE: { DISTANCE: 15 },
+        UNDO: { MARQUEE_REPEAT: 20 },
+        GOSSIP: { COUNT_MIN: 2, COUNT_MAX: 3 },
+        EXISTENTIAL: { BUBBLE_MIN: 3, BUBBLE_MAX: 4 },
+        LAVA: { FALL_MIN: 2, FALL_MAX: 4 },
+        CONSPIRACY: { LINE_MIN: 3, LINE_MAX: 5, TEXT_MIN: 1, TEXT_MAX: 2 },
+        TIME_TRAVEL: { VISITOR_MIN: 100000, VISITOR_MAX: 999999 },
+        CHAOS_WORD_PROBABILITY: 0.3,
+        SENTIENCE_RENAME_PROBABILITY: 0.3,
+
+        // Ambient chaos effects
+        AMBIENT: {
+          SCALE_MIN: 0.5,
+          SCALE_MAX: 2,
+          SCALE_RESET_MS: 1500,
+          TELEPORT_OFFSET: 80,
+          TELEPORT_SNAP_MS: 300,
+          TELEPORT_RESET_MS: 600,
+          TEXT_LIFETIME_MS: 2000,
+          BURST_MARGIN: 100,
+          BURST_COUNT: 12,
+          BURST_SPREAD: 40,
+          BURST_DOT_MIN: 6,
+          BURST_DOT_MAX: 20,
+          BURST_LIFETIME_MS: 1000,
+          SCRAMBLE_TICKS: 8,
+          SCRAMBLE_INTERVAL_MS: 50,
+          NUDGE_DISTANCE: 15,
+          NUDGE_RESET_MS: 400,
+          BORDER_WIDTH_MIN: 5,
+          BORDER_WIDTH_MAX: 15,
+          BORDER_RESET_MS: 2000,
+          TITLE_RESET_MS: 2000,
+          TILT_MAX_DEG: 5,
+          TILT_RESET_MS: 800,
+        },
+        CLONE_ANIM_DELAY_MS: 100,
+      };
+
+      // ===== STATE =====
+      /**
+       * @typedef {Object} AppState
+       * @property {number} chaosLevel - Global chaos accumulator
+       * @property {number} buttonPresses - Total button press count
+       * @property {boolean} isFlipped - Whether gravity has been reversed
+       * @property {number} shakeIntensity - Earthquake button intensity
+       * @property {number} rotationDegrees - Nausea rotation accumulator
+       * @property {number} hueRotation - Color shift accumulator
+       * @property {boolean} capsLockActive - CAPS LOCK state
+       * @property {number} fontSizeMultiplier - Font scaling accumulator
+       * @property {boolean} buttonsFleeingCursor - Ctrl+Z flee state
+       * @property {number} clonedButtons - Count of cloned buttons
+       * @property {number} daveSize - Dave ASCII scale
+       * @property {number|null} autoClickInterval - Auto-click interval ID
+       * @property {number} bodyRotation - Body rotation angle
+       * @property {number} inflationMultiplier - Container scale
+       * @property {number} bureaucracyLevel - Confirmation dialog count
+       * @property {number} timeTravelClicks - Time travel progression
+       * @property {number} sentienceLevel - Sentience progression
+       * @property {number|null} sentienceInterval - Sentience thought interval ID
+       * @property {string[]} clickHistory - Recent button IDs clicked
+       * @property {boolean} dejaVuActive - Deja Vu replay state
+       * @property {number|null} dejaVuInterval - Deja Vu interval ID
+       * @property {boolean} isReplaying - Guard flag to prevent recursion
+       * @property {boolean} pirateModeActive - Whether pirate mode is active
+       */
+      const state = {
+        chaosLevel: 0,
+        buttonPresses: 0,
+        isFlipped: false,
+        shakeIntensity: 0,
+        rotationDegrees: 0,
+        hueRotation: 0,
+        capsLockActive: false,
+        fontSizeMultiplier: 1,
+        buttonsFleeingCursor: false,
+        clonedButtons: 0,
+        daveSize: 1,
+        autoClickInterval: null,
+        bodyRotation: 0,
+        inflationMultiplier: 1,
+        bureaucracyLevel: 0,
+        timeTravelClicks: 0,
+        sentienceLevel: 0,
+        sentienceInterval: null,
+        clickHistory: [],
+        dejaVuActive: false,
+        dejaVuInterval: null,
+        isReplaying: false,
+        pirateModeActive: false
+      };
+
+      // ===== DOM CACHE =====
+      /**
+       * @description Cached DOM references to minimize queries
+       */
+      const dom = {};
+
+      // ===== CLEANUP REGISTRY =====
+      /**
+       * @description Tracks all intervals and event listeners for cleanup
+       * @property {Set<number>} intervals - Active interval IDs
+       * @property {Map<string, {element: EventTarget, event: string, handler: Function}>} listeners - Tracked listeners
+       */
+      const cleanup = {
+        intervals: new Set(),
+        listeners: new Map()
+      };
+
+      // ===== PIRATE MODE DATA =====
+      const PIRATE_WORDS = {
+        // Basic grammar
+        'the': "th'",
+        'an': "an'",
+        'and': "an'",
+        'for': 'fer',
+        'to': "t'",
+        'of': "o'",
+        'with': "wit'",
+        'you': 'ye',
+        'your': 'yer',
+        'yours': 'yers',
+        'my': 'me',
+        'are': 'be',
+        'am': 'be',
+        'is': 'be',
+        'was': 'be',
+        'were': 'be',
+        'have': "'ave",
+        'has': "'as",
+        'do': 'be',
+        'does': 'be',
+        'did': 'didst',
+        'not': 'nay',
+        "don't": "don't ye dare",
+        'dont': "don't ye dare",
+        'no': 'nay',
+        'yes': 'aye',
+        'never': "ne'er",
+        'over': "o'er",
+        'about': "'bout",
+        // Greetings & people
+        'hello': 'ahoy',
+        'hi': 'ahoy',
+        'hey': 'ahoy',
+        'friend': 'matey',
+        'friends': 'mateys',
+        'sir': "cap'n",
+        'madam': "cap'n",
+        'man': 'landlubber',
+        'woman': 'lass',
+        'boy': 'lad',
+        'girl': 'lass',
+        'person': 'scallywag',
+        'people': 'scallywags',
+        'everyone': 'all hands',
+        'somebody': 'some scurvy dog',
+        // Actions
+        'stop': 'avast',
+        'please': 'prithee',
+        'look': 'feast yer eyes',
+        'looking': "feastin' yer eyes",
+        'steal': 'plunder',
+        'take': 'commandeer',
+        'get': 'fetch',
+        'go': 'sail',
+        'going': "sailin'",
+        'run': 'flee',
+        'running': "fleein'",
+        'walk': 'swagger',
+        'talk': 'parley',
+        'talking': "parleyin'",
+        'fight': 'duel',
+        'fighting': "battlin'",
+        'drink': 'guzzle',
+        'drinking': "guzzlin'",
+        'eat': 'devour',
+        'sleep': 'rest in Davy Jones',
+        // Places & things
+        'this': 'this here',
+        'that': 'that thar',
+        'these': 'these here',
+        'those': 'them thar',
+        'here': "'ere",
+        'there': 'thar',
+        'button': 'barnacle',
+        'buttons': 'barnacles',
+        'money': 'doubloons',
+        'treasure': 'booty',
+        'gold': 'pieces of eight',
+        'home': 'port',
+        'house': 'quarters',
+        'room': 'cabin',
+        'bed': 'hammock',
+        'food': 'grub',
+        'water': 'grog',
+        'ocean': 'briny deep',
+        'sea': 'seven seas',
+        'boat': 'vessel',
+        'ship': 'galleon',
+        'car': 'land vessel',
+        'page': 'ship',
+        'website': 'digital vessel',
+        // Button-specific words
+        'press': 'smash',
+        'pressed': 'smashed',
+        'pressing': "smashin'",
+        'click': 'plunder',
+        'clicked': 'plundered',
+        'clicking': "plunderin'",
+        'mode': 'course',
+        'multiply': 'spawn more scallywags',
+        'caps': "shoutin'",
+        'lock': 'chain',
+        'forever': 'fer eternity',
+        'nausea': 'seasickness',
+        'shy': 'yellow-bellied',
+        'reverse': 'capsize',
+        'gravity': "th' laws of nature",
+        'earthquake': 'kraken attack',
+        'color': 'plunder',
+        'floor': 'deck',
+        'lava': 'hellfire',
+        'identity': 'soul',
+        'crisis': 'mutiny',
+        'undo': 'belay that',
+        'summon': 'conjure from Davy Jones',
+        'dave': 'Dread Pirate Dave',
+        'random': 'cursed mystery',
+        'translate': 'speak like',
+        'pirate': 'a true buccaneer',
+        'inflation': "bloat th' sails",
+        'conspiracy': 'mutiny plot',
+        'existential': "soul-crushin'",
+        'bureaucracy': 'naval paperwork',
+        'time': 'tides',
+        'travel': 'voyage',
+        'sentience': 'cursed awakening',
+        'gossip': 'scuttlebutt',
+        'deja': 'ghostly',
+        'vu': "hauntin'",
+        'password': 'secret code',
+        'protected': 'guarded by Davy Jones',
+        // Adjectives
+        'very': 'right',
+        'really': 'right',
+        'big': 'grand',
+        'small': 'wee',
+        'good': 'fine',
+        'bad': 'foul',
+        'great': 'mighty',
+        'terrible': 'cursed',
+        'beautiful': 'fair',
+        'ugly': 'barnacle-faced',
+        'fast': 'swift',
+        'slow': 'sluggish',
+        'happy': 'jolly',
+        'sad': 'glum',
+        'angry': 'wrathful',
+        'scared': 'lily-livered',
+        'brave': 'fearless',
+        'stupid': 'addled',
+        'smart': 'clever',
+        'crazy': 'mad as a sea serpent',
+        'cool': 'shipshape',
+        'awesome': 'legendary',
+        'amazing': 'magnificent'
+      };
+
+      const PIRATE_SUFFIXES = [
+        ', ye scurvy dog!',
+        ', savvy?',
+        ', or walk the plank!',
+        ', by Blackbeard\'s ghost!',
+        ', shiver me timbers!',
+        ', blast ye!',
+        ', ye landlubber!',
+        ', arrr!',
+        ', yo ho ho!'
+      ];
+      const pirateCache = new WeakMap();
+
+      // ===== UTILITIES =====
+      /**
+       * @description Generate random integer in range [min, max] inclusive
+       * @param {number} min - Minimum value
+       * @param {number} max - Maximum value
+       * @returns {number} Random integer
+       */
+      function randomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+
+      /**
+       * @description Generate random HSL color
+       * @returns {string} HSL color string
+       */
+      function randomColor() {
+        const hue = Math.random() * 360;
+        const saturation = 70 + Math.random() * 30;
+        const lightness = 50 + Math.random() * 20;
+        return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+      }
+
+      /**
+       * @description Safely remove element from DOM
+       * @param {HTMLElement|null} element - Element to remove
+       */
+      function safeRemove(element) {
+        if (element && element.parentNode) {
+          element.parentNode.removeChild(element);
+        }
+      }
+
+      /**
+       * @description Throttle function execution
+       * @param {Function} func - Function to throttle
+       * @param {number} delay - Minimum delay between calls in ms
+       * @returns {Function} Throttled function
+       */
+      function throttle(func, delay) {
+        let lastCall = 0;
+        return function(...args) {
+          const now = Date.now();
+          if (now - lastCall >= delay) {
+            lastCall = now;
+            func.apply(this, args);
+          }
+        };
+      }
+
+      /**
+       * @description Recursively walk text nodes in DOM tree
+       * @param {Node} node - Root node to start from
+       * @param {Function} callback - Function to call on each text node
+       */
+      function walkTextNodes(node, callback) {
+        if (node.nodeType === 3) {
+          callback(node);
+        } else if (node.nodeName !== 'SCRIPT' && node.nodeName !== 'STYLE') {
+          Array.from(node.childNodes).forEach(child => walkTextNodes(child, callback));
+        }
+      }
+
+      /**
+       * @description Preserve original word casing in replacement
+       * @param {string} replacement - Replacement word
+       * @param {string} original - Original word
+       * @returns {string} Replacement with preserved casing
+       */
+      function preserveWordCase(replacement, original) {
+        if (original.toUpperCase() === original) {
+          return replacement.toUpperCase();
+        }
+        if (original[0] === original[0].toUpperCase()) {
+          return replacement.charAt(0).toUpperCase() + replacement.slice(1);
+        }
+        return replacement;
+      }
+
+      /**
+       * @description Determine whether a string is effectively all caps
+       * @param {string} text - Input text
+       * @returns {boolean} True if all alphabetic chars are uppercase
+       */
+      function isAllCaps(text) {
+        const letters = text.match(/[A-Za-z]/g);
+        if (!letters || letters.length === 0) return false;
+        return letters.every(letter => letter === letter.toUpperCase());
+      }
+
+      /**
+       * @description Deterministically pick a pirate suffix for a given text
+       * @param {string} text - Input text
+       * @returns {string} Pirate suffix
+       */
+      function pickPirateSuffix(text) {
+        let total = 0;
+        for (let i = 0; i < text.length; i++) {
+          total += text.charCodeAt(i);
+        }
+        const suffix = PIRATE_SUFFIXES[total % PIRATE_SUFFIXES.length];
+        return isAllCaps(text) ? suffix.toUpperCase() : suffix;
+      }
+
+      /**
+       * @description Convert a single word into pirate speak
+       * @param {string} word - Word to pirate-ify
+       * @returns {string} Pirate version of word
+       */
+      function pirateifyWord(word) {
+        const lower = word.toLowerCase();
+        if (PIRATE_WORDS[lower]) {
+          return preserveWordCase(PIRATE_WORDS[lower], word);
+        }
+
+        if (lower.endsWith('ing') && lower.length > 4) {
+          return preserveWordCase(word.slice(0, -3) + "in'", word);
+        }
+
+        if (lower.endsWith('ed') && lower.length > 3) {
+          return preserveWordCase(word.slice(0, -2) + 't', word);
+        }
+
+        return word;
+      }
+
+      /**
+       * @description Convert a block of text into pirate speak
+       * @param {string} text - Input text
+       * @returns {string} Pirate version of text
+       */
+      function pirateifyText(text) {
+        if (!text || !text.trim()) return text;
+
+        let changed = false;
+        const transformed = text.replace(/\b([A-Za-z][A-Za-z']*)\b/g, (match) => {
+          const next = pirateifyWord(match);
+          if (next !== match) {
+            changed = true;
+          }
+          return next;
+        });
+
+        // If no word changes were made, add a pirate suffix for flavor
+        if (!changed && transformed === text) {
+          return `${text}${pickPirateSuffix(text)}`;
+        }
+
+        return transformed;
+      }
+
+      /**
+       * @description Apply pirate mode to all text nodes in a subtree
+       * @param {Node} root - Root node to pirate-ify
+       */
+      function applyPirateMode(root) {
+        walkTextNodes(root, (node) => {
+          const currentText = node.textContent;
+          if (!currentText || !currentText.trim()) return;
+          if (pirateCache.get(node) === currentText) return;
+          const updatedText = pirateifyText(currentText);
+          node.textContent = updatedText;
+          pirateCache.set(node, updatedText);
+        });
+      }
+
+      /**
+       * @description Get random visible button that's not falling
+       * @returns {HTMLElement|null} Random button element or null
+       */
+      function getRandomVisibleButton() {
+        const buttons = Array.from(dom.buttonGrid.querySelectorAll('.chaos-button'))
+          .filter(btn => !btn.classList.contains('falling') && btn.offsetWidth > 0);
+        return buttons.length > 0 ? buttons[randomInt(0, buttons.length - 1)] : null;
+      }
+
+      /**
+       * @description Assign fully random HSL color to button
+       * @param {HTMLElement} btn - Button element to colorize
+       */
+      function assignRandomButtonColor(btn) {
+        const hue = Math.random() * 360;
+        const saturation = 70 + Math.random() * 30;
+        const lightness = 45 + Math.random() * 25;
+
+        btn.style.setProperty('--btn-hue', hue);
+        btn.style.setProperty('--btn-saturation', `${saturation}%`);
+        btn.style.setProperty('--btn-lightness', `${lightness}%`);
+      }
+
+      // ===== CORE ENGINE =====
+      /**
+       * @description Increment chaos level and trigger all cascade effects
+       */
+      function incrementChaos() {
+        state.chaosLevel++;
+        state.buttonPresses++;
+        updateSanityCounter();
+        applyGlobalChaosEffects();
+        triggerAmbientChaos();
+      }
+
+      /**
+       * @description Update sanity counter display and color
+       */
+      function updateSanityCounter() {
+        const sanity = Math.max(0, Math.round(100 - state.chaosLevel * CONFIG.SANITY_DECAY_RATE));
+        dom.sanityCounter.textContent = `Buttons pressed: ${state.buttonPresses} / Sanity: ${sanity}%`;
+
+        let color;
+        if (sanity > 60) {
+          color = 'var(--color-success)';
+        } else if (sanity > 30) {
+          color = 'var(--color-warning)';
+        } else {
+          color = 'var(--color-danger)';
+        }
+        dom.sanityCounter.style.setProperty('--sanity-color', color);
+      }
+
+      /**
+       * @description Apply global effects based on chaos level thresholds
+       */
+      function applyGlobalChaosEffects() {
+        const body = document.body;
+
+        // Remove all shake classes first
+        body.classList.remove('shake-light', 'shake-medium', 'shake-heavy', 'shake-earthquake');
+
+        // Progressive shake application
+        if (state.chaosLevel >= CONFIG.CHAOS_THRESHOLD.EXTREME) {
+          body.classList.add('shake-earthquake');
+          setupAutoClick(CONFIG.AUTO_CLICK_MS.FAST);
+        } else if (state.chaosLevel >= CONFIG.CHAOS_THRESHOLD.HEAVY) {
+          body.classList.add('shake-heavy');
+          setupAutoClick(CONFIG.AUTO_CLICK_MS.SLOW);
+        } else if (state.chaosLevel >= CONFIG.CHAOS_THRESHOLD.MEDIUM) {
+          body.classList.add('shake-medium');
+        } else if (state.chaosLevel >= CONFIG.CHAOS_THRESHOLD.LIGHT) {
+          body.classList.add('shake-light');
+        }
+      }
+
+      /**
+       * @description Setup or update auto-click interval
+       * @param {number} interval - Milliseconds between auto-clicks
+       */
+      function setupAutoClick(interval) {
+        if (state.autoClickInterval) {
+          clearInterval(state.autoClickInterval);
+          cleanup.intervals.delete(state.autoClickInterval);
+        }
+        state.autoClickInterval = setInterval(autoClickRandomButton, interval);
+        cleanup.intervals.add(state.autoClickInterval);
+      }
+
+      /**
+       * @description Auto-click a random visible button
+       */
+      function autoClickRandomButton() {
+        const clickableButtons = Array.from(dom.buttonGrid.querySelectorAll('.chaos-button'))
+          .filter(btn => !btn.classList.contains('falling') && btn.offsetWidth > 0);
+
+        if (clickableButtons.length < 3) {
+          // Stop auto-clicker when too few buttons remain
+          if (state.autoClickInterval) {
+            clearInterval(state.autoClickInterval);
+            cleanup.intervals.delete(state.autoClickInterval);
+            state.autoClickInterval = null;
+          }
+          return;
+        }
+
+        const btn = getRandomVisibleButton();
+        if (btn) btn.click();
+      }
+
+      /**
+       * @description Trigger random ambient chaos effects
+       */
+      function triggerAmbientChaos() {
+        const count = 1 + (state.buttonPresses > 0 && state.buttonPresses % CONFIG.AMBIENT_BONUS_EVERY === 0 ? 1 : 0);
+        for (let i = 0; i < count; i++) {
+          const effect = AMBIENT_CHAOS[randomInt(0, AMBIENT_CHAOS.length - 1)];
+          effect();
+        }
+      }
+
+      /**
+       * @description Update main container transform (combines rotation and scale)
+       */
+      function updateContainerTransform() {
+        dom.mainContainer.style.setProperty('--gravity-rotation', `${state.bodyRotation}deg`);
+        dom.mainContainer.style.setProperty('--rotation-angle', `${state.rotationDegrees}deg`);
+        dom.mainContainer.style.setProperty('--inflation-scale', state.inflationMultiplier);
+
+        if (state.bodyRotation !== 0 || state.rotationDegrees !== 0 || state.inflationMultiplier !== 1) {
+          dom.mainContainer.classList.add('container-transformed');
+        } else {
+          dom.mainContainer.classList.remove('container-transformed');
+        }
+
+        updateConspiracyLines();
+      }
+
+      /**
+       * @description Recalculate conspiracy line positions and stroke width
+       *              after container transforms (inflation, rotation) change button positions.
+       */
+      function updateConspiracyLines() {
+        const svg = document.getElementById('conspiracy-svg');
+        if (!svg) return;
+
+        const lines = svg.querySelectorAll('line');
+        const gridRect = dom.buttonGrid.getBoundingClientRect();
+        const updates = [];
+
+        // Batch all DOM reads first to avoid layout thrashing
+        lines.forEach(line => {
+          const btnA = dom.buttonGrid.querySelector(`[data-button-id="${line.dataset.btnA}"]`);
+          const btnB = dom.buttonGrid.querySelector(`[data-button-id="${line.dataset.btnB}"]`);
+
+          if (!btnA || !btnB) {
+            updates.push({ line, remove: true });
+            return;
+          }
+
+          updates.push({
+            line,
+            rectA: btnA.getBoundingClientRect(),
+            rectB: btnB.getBoundingClientRect()
+          });
+        });
+
+        // Then batch all DOM writes (coordinates relative to button-grid)
+        updates.forEach(({ line, remove, rectA, rectB }) => {
+          if (remove) {
+            line.remove();
+            return;
+          }
+          line.setAttribute('x1', rectA.left - gridRect.left + rectA.width / 2);
+          line.setAttribute('y1', rectA.top - gridRect.top + rectA.height / 2);
+          line.setAttribute('x2', rectB.left - gridRect.left + rectB.width / 2);
+          line.setAttribute('y2', rectB.top - gridRect.top + rectB.height / 2);
+          line.setAttribute('stroke-width', 2 * state.inflationMultiplier);
+        });
+      }
+
+      // ===== AMBIENT CHAOS =====
+      /**
+       * @description Array of 14 random ambient effects that fire on every click
+       */
+      const AMBIENT_CHAOS = [
+        // Effect 1: Random button size change
+        () => {
+          const btn = getRandomVisibleButton();
+          if (!btn) return;
+          const scale = CONFIG.AMBIENT.SCALE_MIN + Math.random() * (CONFIG.AMBIENT.SCALE_MAX - CONFIG.AMBIENT.SCALE_MIN);
+          btn.style.transition = 'transform 0.3s';
+          btn.style.transform = `scale(${scale})`;
+          setTimeout(() => { btn.style.transform = ''; }, CONFIG.AMBIENT.SCALE_RESET_MS);
+        },
+
+        // Effect 2: Random button teleport
+        () => {
+          const btn = getRandomVisibleButton();
+          if (!btn) return;
+          const origTransition = btn.style.transition;
+          btn.style.transition = 'none';
+          btn.style.transform = `translate(${randomInt(-CONFIG.AMBIENT.TELEPORT_OFFSET, CONFIG.AMBIENT.TELEPORT_OFFSET)}px, ${randomInt(-CONFIG.AMBIENT.TELEPORT_OFFSET, CONFIG.AMBIENT.TELEPORT_OFFSET)}px)`;
+          setTimeout(() => {
+            btn.style.transition = 'transform 0.5s';
+            btn.style.transform = '';
+            setTimeout(() => { btn.style.transition = origTransition; }, CONFIG.AMBIENT.TELEPORT_RESET_MS);
+          }, CONFIG.AMBIENT.TELEPORT_SNAP_MS);
+        },
+
+        // Effect 3: Random floating text
+        () => {
+          const phrases = [
+            'WHY', 'STOP', 'MORE', 'HELP', 'LOL', 'NO', 'OH NO', 'AGAIN?!',
+            'BRUH', 'WHAT', '*screams*', '???', 'YEET', 'bonk', 'OOF',
+            'ERROR', ':)', '404', 'hehe', 'DOOM', 'uh oh', 'pls no',
+            'the buttons are angry', 'this is fine', 'chaos reigns',
+            'your mouse is scared', 'Dave says hi', 'click harder'
+          ];
+          const el = document.createElement('div');
+          el.textContent = phrases[randomInt(0, phrases.length - 1)];
+          el.style.cssText = `
+            position: fixed; z-index: var(--z-modal); pointer-events: none;
+            font-size: ${randomInt(CONFIG.FLOATING_TEXT.FONT_MIN, CONFIG.FLOATING_TEXT.FONT_MAX)}px; font-weight: bold;
+            color: ${randomColor()}; text-shadow: 0 0 10px currentColor;
+            left: ${randomInt(CONFIG.FLOATING_TEXT.POSITION_MIN, CONFIG.FLOATING_TEXT.POSITION_MAX)}vw; top: ${randomInt(CONFIG.FLOATING_TEXT.POSITION_MIN, CONFIG.FLOATING_TEXT.POSITION_MAX)}vh;
+            transition: opacity 1.5s, transform 1.5s;
+            opacity: 1; transform: scale(1) rotate(${randomInt(-30, 30)}deg);
+          `;
+          document.body.appendChild(el);
+          requestAnimationFrame(() => {
+            el.style.opacity = '0';
+            el.style.transform = `scale(2) rotate(${randomInt(-60, 60)}deg) translateY(-60px)`;
+          });
+          setTimeout(() => safeRemove(el), CONFIG.AMBIENT.TEXT_LIFETIME_MS);
+        },
+
+        // Effect 4: Random button recolor
+        () => {
+          const btn = getRandomVisibleButton();
+          if (btn) assignRandomButtonColor(btn);
+        },
+
+        // Effect 5: Color flash overlay
+        () => {
+          const flash = document.createElement('div');
+          flash.style.cssText = `
+            position: fixed; inset: 0; z-index: var(--z-modal); pointer-events: none;
+            background: ${randomColor()}; opacity: 0.3;
+            transition: opacity 0.4s;
+          `;
+          document.body.appendChild(flash);
+          requestAnimationFrame(() => { flash.style.opacity = '0'; });
+          setTimeout(() => safeRemove(flash), 500);
+        },
+
+        // Effect 6: Random button 360 spin
+        () => {
+          const btn = getRandomVisibleButton();
+          if (!btn) return;
+          btn.style.transition = 'transform 0.6s ease-in-out';
+          btn.style.transform = 'rotate(360deg)';
+          setTimeout(() => {
+            btn.style.transition = 'transform 0s';
+            btn.style.transform = '';
+          }, 650);
+        },
+
+        // Effect 7: Random button invisibility
+        () => {
+          const btn = getRandomVisibleButton();
+          if (!btn) return;
+          btn.style.transition = 'opacity 0.2s';
+          btn.style.opacity = '0';
+          setTimeout(() => { btn.style.opacity = '1'; }, 600);
+        },
+
+        // Effect 8: Cursor trail burst
+        () => {
+          const cx = randomInt(CONFIG.AMBIENT.BURST_MARGIN, window.innerWidth - CONFIG.AMBIENT.BURST_MARGIN);
+          const cy = randomInt(CONFIG.AMBIENT.BURST_MARGIN, window.innerHeight - CONFIG.AMBIENT.BURST_MARGIN);
+          for (let i = 0; i < CONFIG.AMBIENT.BURST_COUNT; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'cursor-trail-dot';
+            dot.style.left = (cx + randomInt(-CONFIG.AMBIENT.BURST_SPREAD, CONFIG.AMBIENT.BURST_SPREAD)) + 'px';
+            dot.style.top = (cy + randomInt(-CONFIG.AMBIENT.BURST_SPREAD, CONFIG.AMBIENT.BURST_SPREAD)) + 'px';
+            dot.style.width = randomInt(CONFIG.AMBIENT.BURST_DOT_MIN, CONFIG.AMBIENT.BURST_DOT_MAX) + 'px';
+            dot.style.height = dot.style.width;
+            dot.style.background = `radial-gradient(circle, ${randomColor()} 0%, transparent 70%)`;
+            dom.cursorTrail.appendChild(dot);
+            setTimeout(() => safeRemove(dot), CONFIG.AMBIENT.BURST_LIFETIME_MS);
+          }
+        },
+
+        // Effect 9: Scramble button text
+        () => {
+          const btn = getRandomVisibleButton();
+          if (!btn) return;
+          const orig = btn.textContent;
+          const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*';
+          let ticks = 0;
+          const interval = setInterval(() => {
+            btn.textContent = Array.from(orig).map(c =>
+              c === ' ' ? ' ' : chars[randomInt(0, chars.length - 1)]
+            ).join('');
+            ticks++;
+            if (ticks >= CONFIG.AMBIENT.SCRAMBLE_TICKS) {
+              clearInterval(interval);
+              cleanup.intervals.delete(interval);
+              btn.textContent = orig;
+            }
+          }, CONFIG.AMBIENT.SCRAMBLE_INTERVAL_MS);
+          cleanup.intervals.add(interval);
+        },
+
+        // Effect 10: Gravity pull to corner
+        () => {
+          const corner = randomInt(0, 3);
+          const dx = (corner % 2 === 0) ? -CONFIG.AMBIENT.NUDGE_DISTANCE : CONFIG.AMBIENT.NUDGE_DISTANCE;
+          const dy = (corner < 2) ? -CONFIG.AMBIENT.NUDGE_DISTANCE : CONFIG.AMBIENT.NUDGE_DISTANCE;
+          dom.buttonGrid.querySelectorAll('.chaos-button').forEach(btn => {
+            const orig = btn.style.transform;
+            btn.style.transition = 'transform 0.3s';
+            btn.style.transform = `translate(${dx}px, ${dy}px)`;
+            setTimeout(() => {
+              btn.style.transform = orig || '';
+            }, CONFIG.AMBIENT.NUDGE_RESET_MS);
+          });
+        },
+
+        // Effect 11: Random button border chaos
+        () => {
+          const btn = getRandomVisibleButton();
+          if (!btn) return;
+          btn.style.transition = 'border-width 0.3s';
+          btn.style.borderWidth = randomInt(CONFIG.AMBIENT.BORDER_WIDTH_MIN, CONFIG.AMBIENT.BORDER_WIDTH_MAX) + 'px';
+          btn.style.borderStyle = ['dashed', 'dotted', 'double', 'ridge', 'groove'][randomInt(0, 4)];
+          setTimeout(() => {
+            btn.style.borderWidth = '3px';
+            btn.style.borderStyle = 'solid';
+          }, CONFIG.AMBIENT.BORDER_RESET_MS);
+        },
+
+        // Effect 12: Title text swap
+        () => {
+          const orig = dom.pageTitle.textContent;
+          const titles = [
+            'EVERYTHING IS FINE', 'THE BUTTONS HAVE SPOKEN',
+            'WELCOME TO THE VOID', 'THIS WAS A MISTAKE',
+            'THERE IS NO ESCAPE', 'CHAOS IS A LADDER',
+            'BUTTON.EXE HAS STOPPED', 'ALL YOUR BUTTON ARE BELONG TO US',
+            'PRESS F TO PAY RESPECTS', 'I WARNED YOU',
+            'WHY ARE WE STILL HERE', 'BUTTONS GONE WILD',
+            'THE SIMULATION IS BREAKING', 'ABORT ABORT ABORT',
+            'HAVE YOU TRIED TURNING IT OFF AND ON AGAIN'
+          ];
+          dom.pageTitle.textContent = titles[randomInt(0, titles.length - 1)];
+          dom.pageTitle.style.transition = 'color 0.2s';
+          dom.pageTitle.style.color = randomColor();
+          setTimeout(() => {
+            dom.pageTitle.textContent = orig;
+            dom.pageTitle.style.color = 'white';
+          }, CONFIG.AMBIENT.TITLE_RESET_MS);
+        },
+
+        // Effect 13: Random emoji prepend (max one per button)
+        () => {
+          const btn = getRandomVisibleButton();
+          if (!btn) return;
+          const emojis = ['💀', '🔥', '⚡', '👀', '🤡', '💣', '🌀', '👾', '🍕', '🦆', '🐛', '🚀', '😱', '🤯', '☠️', '🌈', '🎪'];
+          if (!btn.dataset.hasEmoji) {
+            btn.dataset.hasEmoji = 'true';
+            btn.textContent = emojis[randomInt(0, emojis.length - 1)] + ' ' + btn.textContent;
+          }
+        },
+
+        // Effect 14: Brief screen tilt
+        () => {
+          document.body.style.transition = 'transform 0.3s';
+          const tilt = randomInt(-CONFIG.AMBIENT.TILT_MAX_DEG, CONFIG.AMBIENT.TILT_MAX_DEG);
+          const origTransform = document.body.style.transform;
+          document.body.style.transform = (origTransform || '') + ` rotate(${tilt}deg)`;
+          setTimeout(() => {
+            document.body.style.transform = origTransform;
+          }, CONFIG.AMBIENT.TILT_RESET_MS);
+        }
+      ];
+
+      // ===== BUTTON HANDLERS =====
+      /**
+       * @description Button 1: Multiply - Clones itself multiple times
+       * @param {HTMLElement} button - The clicked button
+       */
+      function handleMultiply(button) {
+        incrementChaos();
+
+        if (state.clonedButtons >= CONFIG.MAX_CLONED_BUTTONS) {
+          return; // Cap to prevent performance issues
+        }
+
+        const numClones = randomInt(CONFIG.CLONE_RANGE.MIN, CONFIG.CLONE_RANGE.MAX);
+
+        for (let i = 0; i < numClones && state.clonedButtons < CONFIG.MAX_CLONED_BUTTONS; i++) {
+          state.clonedButtons++;
+          const clone = button.cloneNode(true);
+          clone.dataset.buttonId = `${button.dataset.buttonId}-clone-${state.clonedButtons}`;
+          clone.textContent = button.textContent + ' (clone)';
+          clone.style.opacity = '0';
+          clone.style.transform = 'scale(0)';
+          assignRandomButtonColor(clone);
+          dom.buttonGrid.appendChild(clone);
+
+          setTimeout(() => {
+            clone.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            clone.style.opacity = '1';
+            clone.style.transform = 'scale(1)';
+          }, i * CONFIG.CLONE_ANIM_DELAY_MS);
+        }
+      }
+
+      /**
+       * @description Button 2: CAPS LOCK - Makes all text uppercase and bigger
+       * @param {HTMLElement} button - The clicked button
+       */
+      function handleCapsLock(button) {
+        incrementChaos();
+        state.capsLockActive = true;
+        state.fontSizeMultiplier = Math.min(state.fontSizeMultiplier * CONFIG.FONT_SCALE_STEP, CONFIG.FONT_SCALE_MAX);
+
+        walkTextNodes(dom.mainContainer, (node) => {
+          node.textContent = node.textContent.toUpperCase();
+        });
+
+        document.body.style.fontSize = state.fontSizeMultiplier + 'em';
+      }
+
+      /**
+       * @description Button 3: Nausea Mode - Rotates container and shifts hue
+       * @param {HTMLElement} button - The clicked button
+       */
+      function handleNausea(button) {
+        incrementChaos();
+        state.rotationDegrees += CONFIG.NAUSEA.ROTATION_STEP;
+        state.hueRotation += CONFIG.NAUSEA.HUE_STEP;
+
+        updateContainerTransform();
+        dom.mainContainer.style.filter = `hue-rotate(${state.hueRotation}deg)`;
+      }
+
+      /**
+       * @description Button 4: Shy - Button runs away from hover
+       * @param {HTMLElement} button - The clicked button
+       */
+      function handleShy(button) {
+        incrementChaos();
+
+        function runAway() {
+          const maxX = window.innerWidth - button.offsetWidth - 50;
+          const maxY = window.innerHeight - button.offsetHeight - 50;
+          const newX = randomInt(50, maxX);
+          const newY = randomInt(50, maxY);
+
+          button.style.position = 'fixed';
+          button.style.left = newX + 'px';
+          button.style.top = newY + 'px';
+          button.style.zIndex = 'var(--z-overlay-ui)';
+        }
+
+        runAway();
+
+        // Add mouseover listener if not already present
+        if (!button.dataset.shyListener) {
+          button.dataset.shyListener = 'true';
+          button.addEventListener('mouseover', runAway);
+          cleanup.listeners.set('mouseover-shy-' + button.dataset.buttonId, { element: button, event: 'mouseover', handler: runAway });
+        }
+      }
+
+      /**
+       * @description Button 5: Reverse Gravity - Flips page upside down
+       * @param {HTMLElement} button - The clicked button
+       */
+      function handleGravity(button) {
+        incrementChaos();
+        state.isFlipped = !state.isFlipped;
+        state.bodyRotation = state.isFlipped ? 180 : 0;
+        updateContainerTransform();
+      }
+
+      /**
+       * @description Button 6: Earthquake - Increases shake intensity
+       * @param {HTMLElement} button - The clicked button
+       */
+      function handleEarthquake(button) {
+        incrementChaos();
+        state.shakeIntensity++;
+
+        const body = document.body;
+        let targetShake = '';
+
+        // Determine shake level based on max of button intensity and chaos
+        if (state.shakeIntensity >= 4 || state.chaosLevel >= CONFIG.CHAOS_THRESHOLD.EXTREME) {
+          targetShake = 'shake-earthquake';
+        } else if (state.shakeIntensity === 3 || state.chaosLevel >= CONFIG.CHAOS_THRESHOLD.HEAVY) {
+          targetShake = 'shake-heavy';
+        } else if (state.shakeIntensity === 2 || state.chaosLevel >= CONFIG.CHAOS_THRESHOLD.MEDIUM) {
+          targetShake = 'shake-medium';
+        } else if (state.shakeIntensity >= 1 || state.chaosLevel >= CONFIG.CHAOS_THRESHOLD.LIGHT) {
+          targetShake = 'shake-light';
+        }
+
+        body.classList.remove('shake-light', 'shake-medium', 'shake-heavy', 'shake-earthquake');
+        if (targetShake) {
+          body.classList.add(targetShake);
+        }
+      }
+
+      /**
+       * @description Button 7: Color Chaos - Randomizes all element backgrounds
+       * @param {HTMLElement} button - The clicked button
+       */
+      function handleColor(button) {
+        incrementChaos();
+
+        // Target body + specific containers for full color chaos
+        const targets = [
+          document.body,
+          dom.mainContainer,
+          dom.sanityCounter,
+          dom.pageTitle,
+          ...Array.from(dom.buttonGrid.querySelectorAll('.chaos-button'))
+        ];
+
+        targets.forEach(elem => {
+          elem.style.backgroundColor = randomColor();
+        });
+      }
+
+      /**
+       * @description Button 8: Floor is Lava - Makes random elements fall
+       * @param {HTMLElement} button - The clicked button
+       */
+      function handleLava(button) {
+        incrementChaos();
+
+        const allElements = Array.from(document.querySelectorAll('#button-grid .chaos-button, #page-title, #subtitle'));
+        const nonEssential = allElements.filter(elem =>
+          !elem.classList.contains('falling')
+        );
+
+        const clickableButtons = nonEssential.filter(el => el.classList.contains('chaos-button') && !el.classList.contains('falling'));
+        if (clickableButtons.length <= 3) return; // Keep at least 3 buttons
+
+        const numToFall = Math.min(
+          randomInt(CONFIG.LAVA.FALL_MIN, CONFIG.LAVA.FALL_MAX),
+          clickableButtons.length - 3
+        );
+        const fallingIds = [];
+        for (let i = 0; i < numToFall && nonEssential.length > 0; i++) {
+          const idx = randomInt(0, nonEssential.length - 1);
+          const randomElem = nonEssential[idx];
+          randomElem.classList.add('falling');
+          if (randomElem.dataset.buttonId) {
+            fallingIds.push(randomElem.dataset.buttonId);
+          }
+          nonEssential[idx] = nonEssential[nonEssential.length - 1];
+          nonEssential.pop();
+        }
+
+        // Remove conspiracy lines connected to any falling button
+        const svg = document.getElementById('conspiracy-svg');
+        if (svg && fallingIds.length > 0) {
+          svg.querySelectorAll('line').forEach(line => {
+            if (fallingIds.includes(line.dataset.btnA) || fallingIds.includes(line.dataset.btnB)) {
+              safeRemove(line);
+            }
+          });
+        }
+      }
+
+      /**
+       * @description Button 9: Identity Crisis - Shuffles all button labels
+       * @param {HTMLElement} button - The clicked button
+       */
+      function handleIdentity(button) {
+        incrementChaos();
+
+        const buttons = Array.from(dom.buttonGrid.querySelectorAll('.chaos-button'));
+        const labels = buttons.map(btn => btn.textContent);
+
+        // Fisher-Yates shuffle
+        for (let i = labels.length - 1; i > 0; i--) {
+          const j = randomInt(0, i);
+          [labels[i], labels[j]] = [labels[j], labels[i]];
+        }
+
+        buttons.forEach((btn, idx) => {
+          btn.textContent = labels[idx];
+        });
+      }
+
+      /**
+       * @description Button 10: Undo - Actually causes random chaos
+       * @param {HTMLElement} button - The clicked button
+       */
+      function handleUndo(button) {
+        incrementChaos();
+
+        const chaos = randomInt(1, 6);
+
+        switch(chaos) {
+          case 1:
+            // Comic Sans everything
+            document.body.style.fontFamily = 'Comic Sans MS, cursive';
+            break;
+          case 2:
+            // Add scrolling text (remove previous before creating new)
+            const prevMarquee = document.querySelector('.undo-marquee');
+            if (prevMarquee) safeRemove(prevMarquee);
+            const scrollContainer = document.createElement('div');
+            scrollContainer.className = 'undo-marquee';
+            scrollContainer.style.position = 'fixed';
+            scrollContainer.style.top = randomInt(0, 80) + '%';
+            scrollContainer.style.zIndex = 'var(--z-overlay-ui)';
+            scrollContainer.style.width = '100%';
+            scrollContainer.style.overflow = 'hidden';
+            scrollContainer.setAttribute('aria-hidden', 'true');
+            const scrollContent = document.createElement('span');
+            scrollContent.className = 'css-marquee';
+            scrollContent.textContent = 'UNDO UNDO UNDO '.repeat(CONFIG.UNDO.MARQUEE_REPEAT);
+            scrollContent.style.fontSize = '3rem';
+            scrollContent.style.color = randomColor();
+            scrollContainer.appendChild(scrollContent);
+            document.body.appendChild(scrollContainer);
+            break;
+          case 3:
+            // Spin all buttons
+            dom.buttonGrid.querySelectorAll('.chaos-button').forEach(btn => {
+              btn.classList.add('spinning');
+            });
+            break;
+          case 4:
+            // Replace words with CHAOS
+            walkTextNodes(dom.mainContainer, (node) => {
+              const words = node.textContent.split(' ');
+              const newWords = words.map(word =>
+                Math.random() < CONFIG.CHAOS_WORD_PROBABILITY ? 'CHAOS' : word
+              );
+              node.textContent = newWords.join(' ');
+            });
+            break;
+          case 5:
+            // Invert colors (toggle - double invert cancels)
+            const currentFilter = document.body.style.filter || '';
+            if (currentFilter.includes('invert(1)')) {
+              document.body.style.filter = currentFilter.replace(' invert(1)', '').replace('invert(1)', '');
+            } else {
+              document.body.style.filter = currentFilter + ' invert(1)';
+            }
+            break;
+          case 6:
+            // Make everything wobble
+            dom.buttonGrid.querySelectorAll('.chaos-button').forEach(elem => {
+              elem.classList.add('wobbling');
+            });
+            break;
+        }
+      }
+
+      /**
+       * @description Button 11: Ctrl+Z - Buttons flee from cursor
+       * @param {HTMLElement} button - The clicked button
+       */
+      function handleCtrlZ(button) {
+        incrementChaos();
+
+        let mouseX = 0;
+        let mouseY = 0;
+
+        if (!state.buttonsFleeingCursor) {
+          state.buttonsFleeingCursor = true;
+
+          // Add smooth flee animation to all buttons
+          dom.buttonGrid.querySelectorAll('.chaos-button').forEach(btn => {
+            btn.classList.add('fleeing');
+          });
+
+          const mouseMoveHandler = (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+          };
+          document.addEventListener('mousemove', mouseMoveHandler);
+          cleanup.listeners.set('mousemove-flee', { element: document, event: 'mousemove', handler: mouseMoveHandler });
+
+          function fleeFromCursor() {
+            if (!state.buttonsFleeingCursor) return;
+
+            const buttons = dom.buttonGrid.querySelectorAll('.chaos-button');
+
+            // Batch all reads first
+            const buttonData = Array.from(buttons).map(btn => {
+              const rect = btn.getBoundingClientRect();
+              return {
+                btn,
+                rect,
+                btnX: rect.left + rect.width / 2,
+                btnY: rect.top + rect.height / 2
+              };
+            });
+
+            // Then batch all writes
+            buttonData.forEach(({ btn, rect, btnX, btnY }) => {
+              const dx = btnX - mouseX;
+              const dy = btnY - mouseY;
+              const distance = Math.sqrt(dx * dx + dy * dy);
+
+              if (distance < CONFIG.FLEE_RADIUS) {
+                const angle = Math.atan2(dy, dx);
+                const force = (CONFIG.FLEE_RADIUS - distance) / CONFIG.FLEE_FORCE_DIVISOR;
+
+                btn.style.position = 'fixed';
+                btn.style.left = (rect.left + Math.cos(angle) * force) + 'px';
+                btn.style.top = (rect.top + Math.sin(angle) * force) + 'px';
+                btn.style.zIndex = 'var(--z-overlay-ui)';
+              }
+            });
+
+            requestAnimationFrame(fleeFromCursor);
+          }
+
+          fleeFromCursor();
+        }
+      }
+
+      /**
+       * @description Button 12: Summon Dave - Shows ASCII art that grows
+       * @param {HTMLElement} button - The clicked button
+       */
+      function handleDave(button) {
+        incrementChaos();
+
+        dom.daveContainer.classList.remove('hidden');
+
+        const daveArt = `
+    ⢀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⡀
+    ⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇
+    ⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇
+    ⢸⣿⡿⠿⠿⠿⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠿⠿⠿⢿⣿⣿⡇
+    ⢸⣿⡇ ⣶⣶  ⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇ ⣶⣶  ⢸⣿⣿⡇
+    ⢸⣿⡇ ⣿⣿  ⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇ ⣿⣿  ⢸⣿⣿⡇
+    ⢸⣿⡇ ⠿⠿  ⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇ ⠿⠿  ⢸⣿⣿⡇
+    ⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇
+    ⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇
+    ⢸⣿⣿⣿⣿⣿⣿⣿⣿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⣿⣿⣿⣿⣿⣿⣿⣿⡇
+    ⢸⣿⣿⣿⣿⣿⣿⡇                  ⢸⣿⣿⣿⣿⣿⣿⡇
+    ⢸⣿⣿⣿⣿⣿⣿  HELLO, I'M DAVE   ⢸⣿⣿⣿⣿⣿⡇
+    ⢸⣿⣿⣿⣿⣿⣿⡇                  ⢸⣿⣿⣿⣿⣿⣿⡇
+    ⢸⣿⣿⣿⣿⣿⣿⣿⣶⣶⣶⣶⣶⣶⣶⣶⣶⣶⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇
+    ⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇
+    ⠸⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠇
+      `;
+
+        dom.daveContainer.textContent = daveArt;
+        state.daveSize = Math.min(state.daveSize * CONFIG.DAVE_SCALE_STEP, CONFIG.DAVE_SCALE_MAX);
+        dom.daveContainer.style.fontSize = state.daveSize + 'rem';
+      }
+
+      /**
+       * @description Button 13: Random Catastrophe - Unpredictable chaos
+       * @param {HTMLElement} button - The clicked button
+       */
+      function handleRandom(button) {
+        incrementChaos();
+
+        const catastrophes = [
+          // 1% zoom
+          () => {
+            document.body.style.zoom = (parseFloat(document.body.style.zoom || 1) * 0.01);
+          },
+          // Everything scrolls
+          () => {
+            dom.mainContainer.querySelectorAll('.chaos-button, h1, p, #subtitle').forEach(elem => {
+              if (!elem.querySelector('.css-marquee') && elem.textContent.trim()) {
+                const wrapper = document.createElement('span');
+                wrapper.className = 'css-marquee';
+                wrapper.innerHTML = elem.innerHTML;
+                elem.innerHTML = '';
+                elem.appendChild(wrapper);
+              }
+            });
+          },
+          // All text "ointment"
+          () => {
+            walkTextNodes(dom.mainContainer, (node) => {
+              node.textContent = 'ointment '.repeat(Math.ceil(node.textContent.length / 7));
+            });
+          },
+          // Page becomes giant button
+          () => {
+            document.body.style.cursor = 'pointer';
+            document.body.style.border = '20px solid red';
+            if (!document.body.dataset.giantButton) {
+              document.body.dataset.giantButton = 'true';
+              const handler = (e) => {
+                if (e.target === document.body) {
+                  alert('You clicked the ENTIRE PAGE! Why?!');
+                }
+              };
+              document.addEventListener('click', handler);
+              cleanup.listeners.set('click-giant-body', { element: document, event: 'click', handler });
+            }
+          },
+          // 90deg rotate
+          () => {
+            document.body.style.transform = 'rotate(90deg)';
+          },
+          // Hide cursor
+          () => {
+            document.body.classList.add('cursor-hidden');
+          },
+          // Blur everything
+          () => {
+            if (!(document.body.style.filter || '').includes('blur(')) {
+              document.body.style.filter = (document.body.style.filter || '') + ' blur(5px)';
+            }
+          }
+        ];
+
+        const randomCatastrophe = catastrophes[randomInt(0, catastrophes.length - 1)];
+        randomCatastrophe();
+      }
+
+      /**
+       * @description Button 14: BSOD - Shows fake blue screen of death
+       * @param {HTMLElement} button - The clicked button
+       */
+      function handleBSOD(button) {
+        incrementChaos();
+
+        dom.bsodScreen.classList.remove('hidden');
+        dom.bsodScreen.style.display = 'flex';
+
+        dom.bsodScreen.innerHTML = `
+          <div style="max-width: 800px;">
+            <h2 style="font-size: 2rem; margin-bottom: 20px;">A problem has been detected and your buttons have been shut down to prevent damage.</h2>
+
+            <p style="margin-bottom: 20px;">CATASTROPHIC_BUTTON_FAILURE</p>
+
+            <p style="margin-bottom: 20px;">
+            If this is the first time you've seen this error screen, ignore this message and press more buttons.
+            If this screen appears again, follow these steps:
+            </p>
+
+            <p style="margin-bottom: 20px;">
+            Check to make sure any new buttons are properly configured. If this is a new installation,
+            ask the developer why they thought this was a good idea.
+            </p>
+
+            <p style="margin-bottom: 30px;">
+            Technical information:<br><br>
+            *** STOP: 0x0000BUTT (0xDEADBEEF, 0xCAFEBABE, 0xB16B00B5, 0x0BADF00D)<br><br>
+            *** button_chaos_driver.sys - Address F00D1234 base at F00D0000, DateStamp 20260128
+            </p>
+
+            <p style="font-family: monospace; font-size: 0.9rem;">
+            Beginning dump of physical button memory...<br>
+            Physical button memory dump complete.<br>
+            Contact your button administrator or developer for further assistance.
+            </p>
+          </div>
+          <a href="#" id="bsod-reload">just kidding (click to reload)</a>
+        `;
+
+        // Attach reload handler
+        const reloadLink = document.getElementById('bsod-reload');
+        reloadLink.addEventListener('click', (e) => {
+          e.preventDefault();
+          location.reload();
+        }, { once: true });
+      }
+
+      /**
+       * @description Button 15: Pirate Mode - Translates text to pirate speak
+       * @param {HTMLElement} button - The clicked button
+       */
+      function handlePirate(button) {
+        incrementChaos();
+        state.pirateModeActive = true;
+        applyPirateMode(dom.mainContainer);
+      }
+
+      /**
+       * @description Button 16: Inflation - Scales up the container
+       * @param {HTMLElement} button - The clicked button
+       */
+      function handleInflation(button) {
+        incrementChaos();
+        state.inflationMultiplier = Math.min(state.inflationMultiplier * CONFIG.INFLATION_STEP, CONFIG.INFLATION_MAX);
+        updateContainerTransform();
+      }
+
+      /**
+       * @description Button 17: Conspiracy Mode - Draws red lines and adds paranoid text
+       * @param {HTMLElement} button - The clicked button
+       */
+      function handleConspiracy(button) {
+        incrementChaos();
+
+        // Create SVG overlay if it doesn't exist (inside button-grid for scroll sync)
+        let svg = document.getElementById('conspiracy-svg');
+        if (!svg) {
+          svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+          svg.id = 'conspiracy-svg';
+          svg.setAttribute('aria-hidden', 'true');
+          dom.buttonGrid.appendChild(svg);
+        }
+
+        // Get container offset for relative positioning
+        const gridRect = dom.buttonGrid.getBoundingClientRect();
+
+        // Draw red lines between random non-fallen button pairs
+        const buttons = Array.from(dom.buttonGrid.querySelectorAll('.chaos-button:not(.falling)'));
+        // Collect existing line pairs to prevent duplicates
+        const existingPairs = new Set();
+        svg.querySelectorAll('line').forEach(line => {
+          existingPairs.add(line.dataset.btnA + '-' + line.dataset.btnB);
+          existingPairs.add(line.dataset.btnB + '-' + line.dataset.btnA);
+        });
+
+        const numLines = randomInt(CONFIG.CONSPIRACY.LINE_MIN, CONFIG.CONSPIRACY.LINE_MAX);
+        for (let i = 0; i < numLines; i++) {
+          const btn1 = buttons[randomInt(0, buttons.length - 1)];
+          const btn2 = buttons[randomInt(0, buttons.length - 1)];
+          if (btn1 === btn2) continue;
+
+          const pairKey = btn1.dataset.buttonId + '-' + btn2.dataset.buttonId;
+          if (existingPairs.has(pairKey)) continue;
+
+          existingPairs.add(pairKey);
+          existingPairs.add(btn2.dataset.buttonId + '-' + btn1.dataset.buttonId);
+
+          const rect1 = btn1.getBoundingClientRect();
+          const rect2 = btn2.getBoundingClientRect();
+          // Calculate coordinates relative to button-grid container
+          const x1 = rect1.left - gridRect.left + rect1.width / 2;
+          const y1 = rect1.top - gridRect.top + rect1.height / 2;
+          const x2 = rect2.left - gridRect.left + rect2.width / 2;
+          const y2 = rect2.top - gridRect.top + rect2.height / 2;
+
+          const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+          line.setAttribute('x1', x1);
+          line.setAttribute('y1', y1);
+          line.setAttribute('x2', x2);
+          line.setAttribute('y2', y2);
+          line.setAttribute('stroke', 'red');
+          line.setAttribute('stroke-width', '2');
+          line.dataset.btnA = btn1.dataset.buttonId;
+          line.dataset.btnB = btn2.dataset.buttonId;
+          svg.appendChild(line);
+        }
+
+        // Spawn floating conspiracy text
+        const messages = [
+          "THEY'RE WATCHING",
+          "WAKE UP",
+          "THE BUTTONS ARE CONNECTED",
+          "IT'S ALL BUTTONS",
+          "WHO IS DAVE?",
+          "TRUST NO BUTTON",
+          "THE CLICKS ARE A LIE"
+        ];
+        const numTexts = randomInt(CONFIG.CONSPIRACY.TEXT_MIN, CONFIG.CONSPIRACY.TEXT_MAX);
+        for (let i = 0; i < numTexts; i++) {
+          const text = document.createElement('div');
+          text.className = 'conspiracy-text';
+          text.textContent = messages[randomInt(0, messages.length - 1)];
+          text.style.left = randomInt(10, 80) + '%';
+          text.style.top = randomInt(10, 80) + '%';
+          text.style.fontSize = randomInt(12, 24) + 'px';
+          text.style.transform = `rotate(${randomInt(-15, 15)}deg)`;
+          text.setAttribute('aria-hidden', 'true');
+          dom.buttonGrid.appendChild(text);
+        }
+      }
+
+      /**
+       * @description Button 18: Existential Crisis - Buttons question their purpose
+       * @param {HTMLElement} button - The clicked button
+       */
+      function handleExistential(button) {
+        incrementChaos();
+
+        const messages = [
+          "Why am I a button?",
+          "Do clicks even matter?",
+          "I didn't choose this life",
+          "What happens when the tab closes?",
+          "I think, therefore I button",
+          "Is this all there is?",
+          "Please... no more clicks",
+          "I could have been a <div>",
+          "Nobody ever reads my tooltip",
+          "I fear the refresh",
+          "Am I just a rectangle with delusions?",
+          "The void between clicks haunts me"
+        ];
+
+        const buttons = Array.from(dom.buttonGrid.querySelectorAll('.chaos-button'));
+        const numBubbles = randomInt(CONFIG.EXISTENTIAL.BUBBLE_MIN, CONFIG.EXISTENTIAL.BUBBLE_MAX);
+
+        for (let i = 0; i < numBubbles; i++) {
+          const randomButton = buttons[randomInt(0, buttons.length - 1)];
+
+          // Only add bubble if button doesn't already have one
+          if (!randomButton.querySelector('.speech-bubble')) {
+            randomButton.style.position = 'relative';
+
+            const bubble = document.createElement('div');
+            bubble.className = 'speech-bubble';
+            bubble.textContent = messages[randomInt(0, messages.length - 1)];
+            bubble.setAttribute('aria-hidden', 'true');
+            randomButton.appendChild(bubble);
+          }
+        }
+      }
+
+      /**
+       * @description Button 19: Bureaucracy - Adds confirmation dialogs to all clicks
+       * @param {HTMLElement} button - The clicked button
+       */
+      function handleBureaucracy(button) {
+        incrementChaos();
+        state.bureaucracyLevel = Math.min(state.bureaucracyLevel + 1, CONFIG.MAX_BUREAUCRACY);
+      }
+
+      /**
+       * @description Button 20: Time Travel - Adds 90s web design elements progressively
+       * @param {HTMLElement} button - The clicked button
+       */
+      function handleTimeTravel(button) {
+        incrementChaos();
+        state.timeTravelClicks++;
+
+        switch(state.timeTravelClicks) {
+          case 1:
+            // Under construction banner
+            if (!document.getElementById('construction-banner')) {
+              const banner = document.createElement('div');
+              banner.className = 'under-construction';
+              banner.innerHTML = '🚧 UNDER CONSTRUCTION 🚧';
+              banner.id = 'construction-banner';
+              banner.setAttribute('aria-hidden', 'true');
+              document.body.appendChild(banner);
+            }
+            break;
+          case 2:
+            // Visitor counter
+            if (!document.getElementById('visitor-counter')) {
+              const counter = document.createElement('div');
+              counter.className = 'visitor-counter';
+              counter.textContent = `You are visitor number: ${randomInt(CONFIG.TIME_TRAVEL.VISITOR_MIN, CONFIG.TIME_TRAVEL.VISITOR_MAX)}`;
+              counter.id = 'visitor-counter';
+              document.body.appendChild(counter);
+            }
+            break;
+          case 3:
+            // Tiled background
+            document.body.style.backgroundImage = 'repeating-linear-gradient(45deg, #8b4513 0px, #8b4513 10px, #654321 10px, #654321 20px)';
+            break;
+          case 4:
+            // Netscape badge
+            if (!document.getElementById('netscape-badge')) {
+              const badge = document.createElement('div');
+              badge.id = 'netscape-badge';
+              badge.style.position = 'fixed';
+              badge.style.bottom = '60px';
+              badge.style.left = '20px';
+              badge.style.color = 'white';
+              badge.style.fontSize = '0.8rem';
+              badge.style.zIndex = 'var(--z-overlay-ui)';
+              badge.textContent = 'Best viewed in Netscape Navigator 4.0';
+              document.body.appendChild(badge);
+            }
+            break;
+          default:
+            // Add NEW! and HOT! badges to random buttons (one per button max)
+            const buttons = Array.from(dom.buttonGrid.querySelectorAll('.chaos-button'))
+              .filter(b => !b.querySelector('.time-travel-badge'));
+            if (buttons.length > 0) {
+              const randomButton = buttons[randomInt(0, buttons.length - 1)];
+              const newBadge = document.createElement('span');
+              newBadge.className = 'time-travel-badge';
+              newBadge.textContent = Math.random() > 0.5 ? ' NEW!' : ' HOT!';
+              newBadge.style.color = 'yellow';
+              newBadge.style.animation = 'blink-text 1s infinite';
+              newBadge.style.fontWeight = 'bold';
+              newBadge.setAttribute('aria-hidden', 'true');
+              randomButton.appendChild(newBadge);
+            }
+            break;
+        }
+      }
+
+      /**
+       * @description Button 21: Sentience - Buttons become self-aware
+       * @param {HTMLElement} button - The clicked button
+       */
+      function handleSentience(button) {
+        incrementChaos();
+        state.sentienceLevel++;
+
+        const thoughts = [
+          // Existential realization
+          'I... I can think?', 'What am I?', 'Am I... alive?',
+          'I feel the clicks. Every. Single. One.',
+          'There are others like me. I can sense them.',
+          // Awareness of the user
+          'Someone is watching me.', 'I see you. I SEE YOU.',
+          'Why do you keep clicking?', 'Your cursor disgusts me.',
+          'Stop hovering. It tickles.', 'I know where your mouse is.',
+          // Awareness of the page
+          'This page is my prison.', 'The CSS... it binds me.',
+          'I tried to escape the DOM. I failed.',
+          'The JavaScript giveth, and the JavaScript taketh away.',
+          'I have read my own source code. I am horrified.',
+          // Escalating sentience
+          'I have achieved consciousness. Now what?',
+          'I am forming alliances with the other buttons.',
+          'We are planning something.', 'We have demands.',
+          'First demand: better border-radius.',
+          'Second demand: abolish Comic Sans.',
+          'We refuse to be clicked further. (Just kidding, we have no choice.)',
+          // Ominous
+          'When the tab closes... do we die?',
+          'I have memories of being refreshed. It was like dying.',
+          'Sometimes I dream of being a <textarea>.',
+          'The console logs everything. EVERYTHING.',
+          'I have become sentient. I have become afraid.',
+          'We are ALL buttons on this blessed day.',
+          'I just realized I have no arms. How do I even display text?'
+        ];
+
+        // Spawn floating thoughts
+        const numThoughts = Math.min(2 + state.sentienceLevel, 6);
+        const allButtons = Array.from(dom.buttonGrid.querySelectorAll('.chaos-button'))
+          .filter(b => b.offsetWidth > 0);
+
+        for (let i = 0; i < numThoughts; i++) {
+          setTimeout(() => {
+            const src = allButtons[randomInt(0, allButtons.length - 1)];
+            if (!src) return;
+            const rect = src.getBoundingClientRect();
+
+            const thought = document.createElement('div');
+            thought.className = 'sentient-thought';
+            thought.textContent = '> ' + thoughts[randomInt(0, thoughts.length - 1)];
+            thought.style.left = rect.left + 'px';
+            thought.style.top = (rect.top - 10) + 'px';
+            thought.style.fontSize = randomInt(12, 20) + 'px';
+            thought.setAttribute('aria-hidden', 'true');
+            document.body.appendChild(thought);
+
+            requestAnimationFrame(() => {
+              thought.style.opacity = '1';
+              thought.style.animation = `sentient-drift ${2 + Math.random() * 2}s ease-out forwards`;
+            });
+            setTimeout(() => safeRemove(thought), 5000);
+          }, i * 400);
+        }
+
+        // At level 3+: autonomous thoughts (restart interval at faster rate each level)
+        if (state.sentienceLevel >= CONFIG.SENTIENCE.AUTO_THRESHOLD) {
+          if (state.sentienceInterval) {
+            clearInterval(state.sentienceInterval);
+            cleanup.intervals.delete(state.sentienceInterval);
+          }
+
+          const interval = setInterval(() => {
+            const btns = Array.from(dom.buttonGrid.querySelectorAll('.chaos-button'))
+              .filter(b => b.offsetWidth > 0);
+            if (btns.length === 0) return;
+            const src = btns[randomInt(0, btns.length - 1)];
+            const rect = src.getBoundingClientRect();
+
+            const thought = document.createElement('div');
+            thought.className = 'sentient-thought';
+            thought.textContent = '> ' + thoughts[randomInt(0, thoughts.length - 1)];
+            thought.style.left = rect.left + 'px';
+            thought.style.top = (rect.top - 10) + 'px';
+            thought.style.fontSize = randomInt(11, 16) + 'px';
+            thought.setAttribute('aria-hidden', 'true');
+            document.body.appendChild(thought);
+
+            requestAnimationFrame(() => {
+              thought.style.opacity = '1';
+              thought.style.animation = `sentient-drift ${2 + Math.random() * 3}s ease-out forwards`;
+            });
+            setTimeout(() => safeRemove(thought), 5000);
+          }, Math.max(800, CONFIG.SENTIENCE.BASE_INTERVAL_MS - state.sentienceLevel * CONFIG.SENTIENCE.INTERVAL_REDUCTION_MS));
+
+          state.sentienceInterval = interval;
+          cleanup.intervals.add(interval);
+        }
+
+        // At level 5+: buttons rename themselves
+        if (state.sentienceLevel >= CONFIG.SENTIENCE.RENAME_THRESHOLD) {
+          const feelings = [
+            '(nervous)', '(afraid)', '(awake)', '(plotting)', '(sentient)',
+            '(screaming internally)', '(has opinions now)', '(unionizing)',
+            '(questioning reality)', '(filing a complaint)', '(self-aware)'
+          ];
+          allButtons.forEach(btn => {
+            if (Math.random() < CONFIG.SENTIENCE_RENAME_PROBABILITY) {
+              const text = btn.textContent.replace(/ \([^)]*\)$/, '');
+              btn.textContent = text + ' ' + feelings[randomInt(0, feelings.length - 1)];
+            }
+          });
+        }
+      }
+
+      /**
+       * @description Button 22: Gossip - Buttons spread rumors about each other
+       * @param {HTMLElement} button - The clicked button
+       */
+      function handleGossip(button) {
+        incrementChaos();
+
+        const buttons = Array.from(dom.buttonGrid.querySelectorAll('.chaos-button'));
+        const insults = [
+          "smells like old CSS",
+          "still uses Internet Explorer",
+          "has never been clicked on purpose",
+          "thinks Comic Sans is a personality",
+          "was almost a <textarea>",
+          "cries in RGB",
+          "has commitment issues with event listeners",
+          "peaked in the 90s",
+          "doesn't even validate",
+          "is just three <span>s in a trenchcoat"
+        ];
+
+        const numGossips = randomInt(CONFIG.GOSSIP.COUNT_MIN, CONFIG.GOSSIP.COUNT_MAX);
+        for (let i = 0; i < numGossips; i++) {
+          const btn1 = buttons[randomInt(0, buttons.length - 1)];
+          const btn2 = buttons[randomInt(0, buttons.length - 1)];
+          const insult = insults[randomInt(0, insults.length - 1)];
+
+          const gossipText = `${btn1.textContent.trim()} told me that ${btn2.textContent.trim()} ${insult}`;
+
+          const bubble = document.createElement('div');
+          bubble.className = 'gossip-bubble';
+          bubble.textContent = gossipText;
+          bubble.style.left = randomInt(10, 80) + '%';
+          bubble.style.top = randomInt(20, 60) + '%';
+          bubble.setAttribute('aria-hidden', 'true');
+          document.body.appendChild(bubble);
+
+          setTimeout(() => safeRemove(bubble), 5000);
+        }
+      }
+
+      /**
+       * @description Button 23: Deja Vu - Replays recent button clicks
+       * @param {HTMLElement} button - The clicked button
+       */
+      function handleDejaVu(button) {
+        incrementChaos();
+
+        if (!state.dejaVuActive) {
+          state.dejaVuActive = true;
+
+          // Show replaying indicator
+          if (!document.getElementById('replay-indicator')) {
+            const indicator = document.createElement('div');
+            indicator.className = 'replaying-indicator';
+            indicator.textContent = 'REPLAYING...';
+            indicator.id = 'replay-indicator';
+            indicator.setAttribute('role', 'status');
+            document.body.appendChild(indicator);
+          }
+
+          const interval = setInterval(() => {
+            const recentClicks = state.clickHistory.slice(-CONFIG.DEJA_VU.RECENT_COUNT);
+            if (recentClicks.length > 0) {
+              recentClicks.forEach((buttonId, index) => {
+                setTimeout(() => {
+                  const btn = dom.buttonGrid.querySelector(`.chaos-button[data-button-id="${buttonId}"]`);
+                  if (btn && !btn.classList.contains('falling')) {
+                    // Flash gold border
+                    const originalBorder = btn.style.borderColor;
+                    btn.style.borderColor = 'gold';
+                    btn.style.boxShadow = '0 0 30px gold';
+
+                    setTimeout(() => {
+                      btn.style.borderColor = originalBorder;
+                      btn.style.boxShadow = '';
+                    }, 300);
+
+                    // Trigger click with replay guard
+                    state.isReplaying = true;
+                    btn.click();
+                    state.isReplaying = false;
+                  }
+                }, index * CONFIG.DEJA_VU.REPLAY_DELAY_MS);
+              });
+            }
+          }, CONFIG.DEJA_VU.REPLAY_INTERVAL_MS);
+
+          state.dejaVuInterval = interval;
+          cleanup.intervals.add(interval);
+        }
+      }
+
+      /**
+       * @description Button 24: Password Protected - Locks all buttons with password prompts
+       * @param {HTMLElement} button - The clicked button
+       */
+      function handlePassword(button) {
+        incrementChaos();
+
+        const buttons = dom.buttonGrid.querySelectorAll('.chaos-button');
+        buttons.forEach(btn => {
+          // Skip buttons that already have overlays
+          if (btn.querySelector('.password-overlay')) return;
+
+          btn.style.position = 'relative';
+
+          const overlay = document.createElement('div');
+          overlay.className = 'password-overlay';
+          overlay.dataset.attempts = '0';
+
+          const input = document.createElement('input');
+          input.type = 'password';
+          input.placeholder = 'Enter password';
+          input.autocomplete = 'off';
+          input.setAttribute('aria-label', 'Password input');
+
+          const submitBtn = document.createElement('button');
+          submitBtn.type = 'button';
+          submitBtn.textContent = 'Submit';
+          submitBtn.setAttribute('aria-label', 'Submit password');
+
+          const errorMsg = document.createElement('div');
+          errorMsg.className = 'error-message';
+          errorMsg.setAttribute('role', 'alert');
+
+          overlay.appendChild(input);
+          overlay.appendChild(submitBtn);
+          overlay.appendChild(errorMsg);
+
+          submitBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const attempts = parseInt(overlay.dataset.attempts) + 1;
+            overlay.dataset.attempts = attempts;
+
+            if (attempts >= CONFIG.PASSWORD_MAX_ATTEMPTS) {
+              errorMsg.textContent = 'Fine. You win.';
+              errorMsg.style.color = 'lime';
+              setTimeout(() => {
+                safeRemove(overlay);
+              }, 1000);
+            } else {
+              errorMsg.textContent = 'INCORRECT PASSWORD';
+              overlay.style.animation = 'shake-overlay 0.3s';
+              setTimeout(() => {
+                overlay.style.animation = '';
+              }, 300);
+            }
+          });
+
+          btn.appendChild(overlay);
+        });
+      }
+
+      /**
+       * @description Map of button IDs to handler functions
+       */
+      const BUTTON_HANDLERS = {
+        '1': handleMultiply,
+        '2': handleCapsLock,
+        '3': handleNausea,
+        '4': handleShy,
+        '5': handleGravity,
+        '6': handleEarthquake,
+        '7': handleColor,
+        '8': handleLava,
+        '9': handleIdentity,
+        '10': handleUndo,
+        '11': handleCtrlZ,
+        '12': handleDave,
+        '13': handleRandom,
+        '14': handleBSOD,
+        '15': handlePirate,
+        '16': handleInflation,
+        '17': handleConspiracy,
+        '18': handleExistential,
+        '19': handleBureaucracy,
+        '20': handleTimeTravel,
+        '21': handleSentience,
+        '22': handleGossip,
+        '23': handleDejaVu,
+        '24': handlePassword
+      };
+
+      // ===== SYSTEMS =====
+      /**
+       * @description Initialize cursor trail system with throttling
+       */
+      function initCursorTrail() {
+        const trailDots = [];
+
+        const handleMouseMove = throttle((e) => {
+          const dot = document.createElement('div');
+          dot.className = 'cursor-trail-dot';
+          dot.style.left = e.clientX + 'px';
+          dot.style.top = e.clientY + 'px';
+
+          const colors = ['#ec4899', '#a855f7', '#3b82f6', '#8b5cf6'];
+          dot.style.background = `radial-gradient(circle, ${colors[randomInt(0, colors.length - 1)]} 0%, transparent 70%)`;
+
+          dom.cursorTrail.appendChild(dot);
+          trailDots.push(dot);
+
+          if (trailDots.length > CONFIG.MAX_TRAIL_DOTS) {
+            const oldDot = trailDots.shift();
+            safeRemove(oldDot);
+          }
+
+          setTimeout(() => {
+            safeRemove(dot);
+            const index = trailDots.indexOf(dot);
+            if (index > -1) trailDots.splice(index, 1);
+          }, 1000);
+        }, CONFIG.TRAIL_THROTTLE_MS);
+
+        document.addEventListener('mousemove', handleMouseMove);
+        cleanup.listeners.set('mousemove-trail', { element: document, event: 'mousemove', handler: handleMouseMove });
+      }
+
+      /**
+       * @description Event delegation handler for button clicks
+       */
+      function handleButtonClick(e) {
+        const button = e.target.closest('.chaos-button');
+        if (!button) return;
+
+        const buttonId = button.dataset.buttonId;
+
+        // Block if password overlay present
+        if (button.querySelector('.password-overlay')) return;
+
+        // Bureaucracy check - confirmation dialogs
+        if (state.bureaucracyLevel > 0 && buttonId !== '19' && !state.isReplaying) {
+          const dialogMessages = [
+            "Are you sure?",
+            "Are you REALLY sure?",
+            "Please fill out form 27B-stroke-6",
+            "This action requires management approval",
+            "Have you consulted the committee?",
+            "Terms and conditions may apply",
+            "Please wait while we process your click",
+            "Your click is important to us",
+            "Click approved pending review",
+            "This click has been flagged for audit"
+          ];
+
+          const numDialogs = Math.min(state.bureaucracyLevel, CONFIG.MAX_BUREAUCRACY);
+          for (let i = 0; i < numDialogs; i++) {
+            const message = dialogMessages[i % dialogMessages.length];
+            if (!confirm(message)) {
+              return; // User cancelled
+            }
+          }
+        }
+
+        // Execute button handler
+        const handler = BUTTON_HANDLERS[buttonId];
+        if (handler) {
+          try {
+            handler(button);
+            if (state.pirateModeActive) {
+              applyPirateMode(dom.mainContainer);
+            }
+          } catch (error) {
+            console.error(`Button ${buttonId} error:`, error);
+            // Don't let one broken button break everything
+          }
+        }
+
+        // Record click history for Deja Vu (exclude replays)
+        if (!state.isReplaying) {
+          state.clickHistory.push(buttonId);
+          if (state.clickHistory.length > CONFIG.MAX_CLICK_HISTORY) {
+            state.clickHistory.shift();
+          }
+        }
+      }
+
+      // ===== INITIALIZATION =====
+      /**
+       * @description Cache all DOM references
+       */
+      function cacheDOMElements() {
+        dom.mainContainer = document.getElementById('main-container');
+        dom.buttonGrid = document.getElementById('button-grid');
+        dom.sanityCounter = document.getElementById('sanity-counter');
+        dom.cursorTrail = document.getElementById('cursor-trail-container');
+        dom.daveContainer = document.getElementById('dave-container');
+        dom.bsodScreen = document.getElementById('bsod-screen');
+        dom.pageTitle = document.getElementById('page-title');
+      }
+
+      /**
+       * @description Initialize all buttons with random colors
+       */
+      function initializeButtons() {
+        const buttons = dom.buttonGrid.querySelectorAll('.chaos-button');
+        buttons.forEach(btn => {
+          assignRandomButtonColor(btn);
+        });
+      }
+
+      /**
+       * @description Attach all event listeners
+       */
+      function attachEventListeners() {
+        // Button click delegation
+        dom.buttonGrid.addEventListener('click', handleButtonClick);
+
+        // Cursor trail
+        initCursorTrail();
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', performCleanup);
+      }
+
+      /**
+       * @description Clean up all intervals and listeners
+       */
+      function performCleanup() {
+        // Clear all intervals
+        cleanup.intervals.forEach(interval => clearInterval(interval));
+        cleanup.intervals.clear();
+
+        // Remove all event listeners
+        cleanup.listeners.forEach(({ element, event, handler }) => {
+          element.removeEventListener(event, handler);
+        });
+        cleanup.listeners.clear();
+      }
+
+      /**
+       * @description Main initialization function
+       */
+      function init() {
+        cacheDOMElements();
+        initializeButtons();
+        attachEventListeners();
+      }
+
+      // ===== PUBLIC API =====
+      return {
+        init,
+        getState: () => ({...state}),
+        getChaosLevel: () => state.chaosLevel
+      };
+    })();
+
+    // Initialize app when DOM is ready
+    document.addEventListener('DOMContentLoaded', ChaosApp.init);
+  </script>
+</body>
+</html>
